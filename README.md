@@ -1,5 +1,5 @@
 ## ListTreeView
-[A treeview for Flutter. Based on the listview](https://github.com/sooxie/list_treevie)
+[A treeview for Flutter. Based on the listview](https://github.com/sooxie/list_treeview)
 
 - Highly customizable. It only manages the tree structure of the data, and the UI is designed by yourself.
 - Performance is efficient because of the Listview's reuse mechanism.
