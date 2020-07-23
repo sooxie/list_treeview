@@ -31,13 +31,11 @@ import 'tree_define.dart';
 /// builds the children on demand.
 
 class ListTreeView extends StatefulWidget {
-
-  ListTreeView({
-    @required this.itemBuilder,
-    this.onTap,
-    this.onLongPress,
-    this.controller
-  });
+  ListTreeView(
+      {@required this.itemBuilder,
+      this.onTap,
+      this.onLongPress,
+      this.controller});
   final IndexedBuilder itemBuilder;
   final PressCallback onLongPress;
   final TreeViewController controller;
@@ -50,7 +48,6 @@ class ListTreeView extends StatefulWidget {
 }
 
 class _ListTreeViewState extends State<ListTreeView> {
-
   @override
   void initState() {
     super.initState();
@@ -69,13 +66,12 @@ class _ListTreeViewState extends State<ListTreeView> {
 
   @override
   Widget build(BuildContext context) {
-
     return ListView.builder(
       itemBuilder: (BuildContext context, int index) {
-
 //        int num = widget.controller.numberOfVisibleChild();
         ///The [TreeNode] associated with the current item
         TreeNode treeNode = widget.controller.treeNodeOfIndex(index);
+
         ///The level of the current item
         int level = widget.controller.levelOfNode(treeNode.item);
         bool isExpand = widget.controller.isExpanded(treeNode.item);
@@ -83,21 +79,19 @@ class _ListTreeViewState extends State<ListTreeView> {
         ///Your event is passed through the [Function] with the relevant data
         return InkWell(
           onLongPress: () {
-            widget.onLongPress(index,level,isExpand,treeNode.item);
+            widget.onLongPress(index, level, isExpand, treeNode.item);
           },
           onTap: () {
             itemClick(index);
-            widget.onTap(index,level,isExpand,treeNode.item);
+            widget.onTap(index, level, isExpand, treeNode.item);
           },
           child: Container(
-            child: widget.itemBuilder(context,index,level,isExpand,treeNode.item),
+            child: widget.itemBuilder(
+                context, index, level, isExpand, treeNode.item),
           ),
         );
       },
-      itemCount:  widget.controller.numberOfVisibleChild(),
+      itemCount: widget.controller.numberOfVisibleChild(),
     );
   }
-
 }
-
-

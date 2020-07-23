@@ -41,6 +41,7 @@ class TreeNode<T> {
     }
     return _expanded;
   }
+
   set setExpanded(bool expanded) {
     this.expandCallback = null;
     _expanded = expanded;
@@ -48,7 +49,7 @@ class TreeNode<T> {
 }
 
 class TreeNodeItem {
-  TreeNodeItem({this.parent, this.index,this.controller});
+  TreeNodeItem({this.parent, this.index, this.controller});
 
   final dynamic parent;
   final int index;
@@ -63,15 +64,11 @@ class TreeNodeItem {
   }
 }
 
-
 class NodeData {
   NodeData() : children = [];
   List<NodeData> children;
 
   addChild(NodeData child) {
-     children.add(child);
+    children.add(child);
   }
-
-
-
 }

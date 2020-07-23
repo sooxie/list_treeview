@@ -1,6 +1,6 @@
 name: list_treeview
-description: A treeview for Flutter. Based on the listview.
-version: 0.1.1
+description: A treeview for Flutter. Based on the listview. Infinitely increasing child levels and child nodes.
+version: 0.1.4
 homepage: https://github.com/sooxie/list_treeview
 
 environment:

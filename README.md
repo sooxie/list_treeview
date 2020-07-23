@@ -18,7 +18,7 @@
 ##### 1. Depend on it
 ```yaml
 dependencies:
-  list_treeview: ^0.0.1
+  list_treeview: [version]
 ```
 
 ##### 2. Install it
@@ -29,17 +29,16 @@ $ flutter pub get
 
 #####  3. Import it
 ```dart
-import 'package:list_treeview/list_treeview.dart'; pub get
+import 'package:list_treeview/list_treeview.dart';
 
 ```
 
 ## Usage
 
 #### 1、Set the data for each row.
-Your data class must inherit from **Nodedata**, nd you can customize other properties of the class.
+Your data class must inherit from **Nodedata**, and you can customize other properties of the class.
 
 ```dart
-
 /// The data class that is bound to the child node
 /// You must inherit from NodeData ！！！
 /// You can customize any of your properties
@@ -54,13 +53,11 @@ class TreeNodeData extends NodeData {
   String property3;
   ///...
 }
-
 ```
 
 The TreeViewController controls the data and expansion and contraction of the ListTreeview
 
 ```dart
-
 TreeViewController _controller;
   @override
   void initState() {
@@ -95,8 +92,8 @@ TreeViewController _controller;
 
 ```dart
 _controller.insertAtFront(dataNode,newNode);
-//    _controller.insertAtRear(dataNode, newNode);
-//    _controller.insertAtIndex(1, dataNode, newNode);
+//_controller.insertAtRear(dataNode, newNode);
+//_controller.insertAtIndex(1, dataNode, newNode);
 
 ```
 

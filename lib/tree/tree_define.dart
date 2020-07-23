@@ -22,12 +22,12 @@ import 'package:flutter/material.dart';
 
 typedef WidgetBuilder = Widget Function(BuildContext context);
 typedef ExpandCallback = bool Function(dynamic item);
-typedef IndexedBuilder = Widget Function(BuildContext context, int index, int level, bool isExpand,dynamic data);
+typedef IndexedBuilder = Widget Function(
+    BuildContext context, int index, int level, bool isExpand, dynamic data);
 
-typedef PressCallback = Function(int index, int level,bool isExpand,dynamic item);
+typedef PressCallback = Function(
+    int index, int level, bool isExpand, dynamic item);
 
 class Constant {
   final int min = -1;
 }
-
-
