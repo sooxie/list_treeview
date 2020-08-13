@@ -31,15 +31,22 @@ import 'tree_define.dart';
 /// builds the children on demand.
 
 class ListTreeView extends StatefulWidget {
-  ListTreeView(
-      {@required this.itemBuilder,
-      this.onTap,
-      this.onLongPress,
-      this.controller});
+  ListTreeView({
+    @required this.itemBuilder,
+    this.onTap,
+    this.onLongPress,
+    this.controller,
+    this.toggleNodeOnTap = true,
+  });
   final IndexedBuilder itemBuilder;
   final PressCallback onLongPress;
   final TreeViewController controller;
   final PressCallback onTap;
+
+  /// If `false` you have to explicitly expand or collapse nodes.
+  ///
+  /// This can be done using the [TreeViewControlle].`expandOrCollapse()` method.
+  final bool toggleNodeOnTap;
 
   @override
   State<StatefulWidget> createState() {
@@ -82,7 +89,9 @@ class _ListTreeViewState extends State<ListTreeView> {
             widget.onLongPress(index, level, isExpand, treeNode.item);
           },
           onTap: () {
-            itemClick(index);
+            if (widget.toggleNodeOnTap) {
+              itemClick(index);
+            }
             widget.onTap(index, level, isExpand, treeNode.item);
           },
           child: Container(
