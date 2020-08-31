@@ -78,10 +78,22 @@ class TreePage extends StatefulWidget {
 class _TreePageState extends State<TreePage>
     with SingleTickerProviderStateMixin {
   TreeViewController _controller;
-
+  bool _isSuccess;
   @override
   void initState() {
     super.initState();
+    ///The controller must be initialized when the treeView create
+    _controller = TreeViewController();
+    ///Data may be requested asynchronously
+    getData();
+  }
+
+
+  void getData() async {
+
+    print('start get data');
+    _isSuccess = false;
+    await Future.delayed(Duration(seconds: 2));
 
     var colors1 = TreeNodeData(label: 'Colors1');
     var color11 = TreeNodeData(
@@ -112,8 +124,17 @@ class _TreePageState extends State<TreePage>
     colors2.addChild(color24);
 
     /// set data
-    _controller = TreeViewController(data: [colors1, colors2]);
+    _controller.treeData([colors1, colors2]);
+    print('set treeData suceess');
+
+    setState(() {
+      _isSuccess = true;
+    });
+
   }
+
+
+
 
   @override
   void dispose() {
@@ -147,70 +168,84 @@ class _TreePageState extends State<TreePage>
       appBar: AppBar(
         title: Text('TreeView'),
       ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-              child: ListTreeView(
-            itemBuilder: (BuildContext context, int index, int level,
-                bool isExpand, dynamic data) {
-              TreeNodeData item = data;
-//              double width = MediaQuery.of(context).size.width;
-              double offsetX = level * 16.0;
-              return Container(
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(width: 1, color: Colors.grey))),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: offsetX),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              '$index',
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              '${item.label}',
-                              style: TextStyle(color: item.color),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Visibility(
-                      visible: isExpand,
-                      child: InkWell(
-                        onTap: () {
-                          add(item);
-                        },
-                        child: Icon(
-                          Icons.add,
-                          size: 30,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            },
-            onTap: (index, level, isExpand, data) {
-              print('index = $index');
-            },
-            onLongPress: (index, level, isExpand, data) {
-              delete(data);
-            },
-            controller: _controller,
-          )),
-        ],
-      ),
+      body: _isSuccess ? getBody(): getProgressView(),
     );
   }
+
+  Widget getProgressView() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+
+  Widget getBody() {
+    return Column(
+      children: <Widget>[
+        Expanded(
+            child: ListTreeView(
+              itemBuilder: (BuildContext context, int index, int level,
+                  bool isExpand, dynamic data) {
+                TreeNodeData item = data;
+//              double width = MediaQuery.of(context).size.width;
+                double offsetX = level * 16.0;
+                return Container(
+                  padding: EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(width: 1, color: Colors.grey))),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: offsetX),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                '$index',
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                '${item.label}',
+                                style: TextStyle(color: item.color),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Visibility(
+                        visible: isExpand,
+                        child: InkWell(
+                          onTap: () {
+                            add(item);
+                          },
+                          child: Icon(
+                            Icons.add,
+                            size: 30,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
+              onTap: (index, level, isExpand, data) {
+                print('index = $index');
+              },
+              onLongPress: (index, level, isExpand, data) {
+                delete(data);
+              },
+              controller: _controller,
+            )),
+      ],
+    );
+  }
+
+
+
 }

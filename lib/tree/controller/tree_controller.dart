@@ -23,12 +23,20 @@ import '../node/tree_node.dart';
 
 /// Controls the ListTreeView.
 class TreeViewController extends ChangeNotifier {
-  TreeViewController({this.data});
+  TreeViewController();
 
   NodeController _rootController;
 
   dynamic rootDataNode;
-  final List<dynamic> data;
+  List<dynamic> data;
+
+
+  void treeData(List data) {
+    assert(data != null, 'The data should not be empty');
+    this.data = data;
+    notifyListeners();
+
+  }
 
   /// Gets the data associated with each item
   dynamic dataForTreeNode(TreeNodeItem nodeItem) {

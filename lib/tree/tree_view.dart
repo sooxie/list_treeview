@@ -33,9 +33,10 @@ import 'tree_define.dart';
 class ListTreeView extends StatefulWidget {
   ListTreeView(
       {@required this.itemBuilder,
+      @required this.controller,
       this.onTap,
-      this.onLongPress,
-      this.controller});
+      this.onLongPress}) : assert(controller != null, "The TreeViewController can't be empty") ;
+
   final IndexedBuilder itemBuilder;
   final PressCallback onLongPress;
   final TreeViewController controller;
@@ -51,11 +52,12 @@ class _ListTreeViewState extends State<ListTreeView> {
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(update);
+
+    widget.controller.addListener(updateView);
   }
 
   /// update view
-  void update() {
+  void updateView() {
     setState(() => {});
   }
 
@@ -66,6 +68,14 @@ class _ListTreeViewState extends State<ListTreeView> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.controller == null ||
+        widget.controller.data == null ||
+        widget.controller.data.length == 0) {
+      return Center(
+        child: Text('No data'),
+      );
+    }
+
     return ListView.builder(
       itemBuilder: (BuildContext context, int index) {
 //        int num = widget.controller.numberOfVisibleChild();
