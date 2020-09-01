@@ -1,4 +1,10 @@
-# 0.1.2
+# 0.2.0
+
+- The controller must be initialized when the treeView create
+- Add asynchronous setup data
+- Fix bug
+
+# 0.1.4
 
 - Optimize code format
 

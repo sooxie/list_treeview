@@ -38,6 +38,7 @@ class ListTreeView extends StatefulWidget {
     this.controller,
     this.toggleNodeOnTap = true,
   });
+
   final IndexedBuilder itemBuilder;
   final PressCallback onLongPress;
   final TreeViewController controller;
@@ -58,11 +59,12 @@ class _ListTreeViewState extends State<ListTreeView> {
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(update);
+
+    widget.controller.addListener(updateView);
   }
 
   /// update view
-  void update() {
+  void updateView() {
     setState(() => {});
   }
 
@@ -73,6 +75,14 @@ class _ListTreeViewState extends State<ListTreeView> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.controller == null ||
+        widget.controller.data == null ||
+        widget.controller.data.length == 0) {
+      return Center(
+        child: Text('No data'),
+      );
+    }
+
     return ListView.builder(
       itemBuilder: (BuildContext context, int index) {
 //        int num = widget.controller.numberOfVisibleChild();

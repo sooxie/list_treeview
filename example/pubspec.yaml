@@ -23,6 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+#  list_treeview: ^0.1.4
+
   list_treeview:
     path: ../
 
