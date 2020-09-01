@@ -19,14 +19,13 @@
 // THE SOFTWARE.
 
 import 'package:flutter/material.dart';
+import 'package:list_treeview/list_treeview.dart';
 
 typedef WidgetBuilder = Widget Function(BuildContext context);
 typedef ExpandCallback = bool Function(dynamic item);
-typedef IndexedBuilder = Widget Function(
-    BuildContext context, int index, int level, bool isExpand, dynamic data);
+typedef IndexedBuilder = Widget Function(BuildContext context, NodeData data);
 
-typedef PressCallback = Function(
-    int index, int level, bool isExpand, dynamic item);
+typedef PressCallback = Function(NodeData item);
 
 class Constant {
   final int min = -1;

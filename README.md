@@ -8,6 +8,7 @@
 
 
 ![avatar](./images/tree.gif)
+![avatar](./images/screen3.png)
 
 
 
@@ -132,4 +133,22 @@ _controller.insertAtFront(dataNode,newNode);
 ```dart
 _controller.removeItem(item);
 ```
+
+#### Expand or collapse children
+```dart
+/// Control item to expand or collapse
+/// [index] The index of the selected item
+_controller.expandOrCollapse(index);
+```
+
+#### Selected
+```
+/// select only itself
+_controller.selectItem(item);
+
+/// Select itself and all child nodes
+_controller.selectAllChild(item);
+```
+
+
 

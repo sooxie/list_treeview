@@ -28,7 +28,7 @@ class TreeNode<T> {
 
   final TreeNodeItem lazyItem;
 
-  dynamic get item {
+  NodeData get item {
     if (lazyItem != null) {
       return lazyItem.item;
     }
@@ -54,9 +54,9 @@ class TreeNodeItem {
   final dynamic parent;
   final int index;
   final TreeViewController controller;
-  dynamic _item;
+  NodeData _item;
 
-  dynamic get item {
+  NodeData get item {
     if (_item == null) {
       _item = controller.dataForTreeNode(this);
     }
@@ -64,9 +64,19 @@ class TreeNodeItem {
   }
 }
 
+///This class contains information about the nodes, such as Index and level, and whether to expand. It also contains other information
 class NodeData {
   NodeData() : children = [];
   List<NodeData> children;
+  bool isSelected = false;
+
+  /// Index in all nodes
+  int index = -1;
+
+  /// Index in parent node
+  int indexInParent = -1;
+  int level = -1;
+  bool isExpand = false;
 
   addChild(NodeData child) {
     children.add(child);

@@ -30,12 +30,10 @@ class TreeViewController extends ChangeNotifier {
   dynamic rootDataNode;
   List<dynamic> data;
 
-
   void treeData(List data) {
     assert(data != null, 'The data should not be empty');
     this.data = data;
     notifyListeners();
-
   }
 
   /// Gets the data associated with each item
@@ -47,7 +45,6 @@ class TreeViewController extends ChangeNotifier {
     return nodeData.children[nodeItem.index];
   }
 
-  ///
   int itemChildrenLength(dynamic item) {
     if (item == null) {
       return data.length;
@@ -109,7 +106,6 @@ class TreeViewController extends ChangeNotifier {
 
   /// Begin expand
   void expandItem(TreeNode treeNode) {
-//    NodeController parentController = _rootController.controllerOfItem(treeNode.item);
     List items = [treeNode.item];
     while (items.length > 0) {
       var currentItem = items.first;
@@ -179,6 +175,22 @@ class TreeViewController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Appends all nodes to the head of parent.
+  /// [parent] The parent node
+  /// [newNode] The node will be insert
+  /// [closeCanInsert] Can insert when parent closed
+  void insertAllAtFront(NodeData parent, List<NodeData> newNodes,
+      {bool closeCanInsert = false}) {
+    if (!closeCanInsert) {
+      if (parent != null && !isExpanded(parent)) {
+        return;
+      }
+    }
+    parent.children.insertAll(0, newNodes);
+    _insertAllItemAtIndex(0, parent, newNodes);
+    notifyListeners();
+  }
+
   /// Insert a node in the end
   /// [parent] The parent node
   /// [newNode] The node will be insert
@@ -211,7 +223,6 @@ class TreeViewController extends ChangeNotifier {
     notifyListeners();
   }
 
-  ///
   void _insertItemAtIndex(int index, dynamic parent,
       {bool isIndex = false, bool isFront = true}) {
     int idx = indexOfItem(parent);
@@ -226,6 +237,32 @@ class TreeViewController extends ChangeNotifier {
       if (isFront) {
         var newControllers = createNodeController(parentController, [0]);
         parentController.insertChildControllers(newControllers, [0]);
+      } else {
+        var newControllers = createNodeController(
+            parentController, [parentController.childControllers.length]);
+        parentController.addChildController(newControllers);
+      }
+    }
+  }
+
+  void _insertAllItemAtIndex(int index, dynamic parent, List<NodeData> newNodes,
+      {bool isIndex = false, bool isFront = true}) {
+    int idx = indexOfItem(parent);
+    if (idx == -1) {
+      return;
+    }
+    NodeController parentController = _rootController.controllerOfItem(parent);
+    if (isIndex) {
+      var newControllers = createNodeController(parentController, [index]);
+      parentController.insertNewChildControllers(newControllers[0], index);
+    } else {
+      if (isFront) {
+        List nodes = [];
+        for (int i = 0; i < newNodes.length; i++) {
+          nodes.add(i);
+        }
+        var newControllers = createNodeController(parentController, nodes);
+        parentController.insertChildControllers(newControllers, nodes);
       } else {
         var newControllers = createNodeController(
             parentController, [parentController.childControllers.length]);
@@ -260,13 +297,38 @@ class TreeViewController extends ChangeNotifier {
     NodeController nodeController =
         _rootController.controllerOfItem(parent).childControllers[index];
     dynamic child = nodeController.treeNode.item;
-    //删除的index
     int idx = _rootController.lastVisibleDescendantIndexForItem(child);
     if (idx == -1) {
       return;
     }
     NodeController parentController = _rootController.controllerOfItem(parent);
     parentController.removeChildControllers([index]);
+  }
+
+  ///select
+  void selectItem(dynamic item) {
+    assert(item != null, 'Item should not be null');
+    NodeData sItem = item;
+    sItem.isSelected = !sItem.isSelected;
+    notifyListeners();
+  }
+
+  void selectAllChild(dynamic item) {
+    assert(item != null, 'Item should not be null');
+    NodeData sItem = item;
+    sItem.isSelected = !sItem.isSelected;
+    if (sItem.children.length > 0) {
+      _selectAllChild(sItem);
+    }
+    notifyListeners();
+  }
+
+  void _selectAllChild(NodeData sItem) {
+    if (sItem.children.length == 0) return;
+    for (NodeData child in sItem.children) {
+      child.isSelected = sItem.isSelected;
+      _selectAllChild(child);
+    }
   }
 
   /// Create controllers for each child node
@@ -324,7 +386,7 @@ class TreeViewController extends ChangeNotifier {
   }
 
   ///Gets the data information for the parent node
-  dynamic parentOfItem(dynamic item) {
+  NodeData parentOfItem(dynamic item) {
     NodeController controller = _rootController.controllerOfItem(item);
     return controller.parent.treeNode.item;
   }

@@ -60,6 +60,7 @@ class TreeNodeData extends NodeData {
   /// Other properties that you want to define
   final String label;
   final Color color;
+
   String property1;
   String property2;
   String property3;
@@ -79,18 +80,25 @@ class _TreePageState extends State<TreePage>
     with SingleTickerProviderStateMixin {
   TreeViewController _controller;
   bool _isSuccess;
+  List<Color> _colors = [];
   @override
   void initState() {
     super.initState();
+
     ///The controller must be initialized when the treeView create
     _controller = TreeViewController();
+
+    for (int i = 0; i < 100; i++) {
+      if (randomColor() != null) {
+        _colors.add(randomColor());
+      }
+    }
+
     ///Data may be requested asynchronously
     getData();
   }
 
-
   void getData() async {
-
     print('start get data');
     _isSuccess = false;
     await Future.delayed(Duration(seconds: 2));
@@ -130,15 +138,22 @@ class _TreePageState extends State<TreePage>
     setState(() {
       _isSuccess = true;
     });
-
   }
-
-
-
-
+  
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Color getColor(int level) {
+    return _colors[level % _colors.length];
+  }
+
+  Color randomColor() {
+    int r = Random.secure().nextInt(200);
+    int g = Random.secure().nextInt(200);
+    int b = Random.secure().nextInt(200);
+    return Color.fromARGB(255, r, g, b);
   }
 
   /// Add
@@ -151,7 +166,7 @@ class _TreePageState extends State<TreePage>
     int b = Random.secure().nextInt(255);
 
     var newNode = TreeNodeData(
-        label: 'rgb($r,$g,$b)', color: Color.fromARGB(2555, r, g, b));
+        label: 'rgb($r,$g,$b)', color: Color.fromARGB(255, r, g, b));
 
     _controller.insertAtFront(dataNode, newNode);
 //    _controller.insertAtRear(dataNode, newNode);
@@ -162,13 +177,21 @@ class _TreePageState extends State<TreePage>
     _controller.removeItem(item);
   }
 
+  void select(dynamic item) {
+    _controller.selectItem(item);
+  }
+
+  void selectAllChild(dynamic item) {
+    _controller.selectAllChild(item);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('TreeView'),
       ),
-      body: _isSuccess ? getBody(): getProgressView(),
+      body: _isSuccess ? getBody() : getProgressView(),
     );
   }
 
@@ -178,74 +201,93 @@ class _TreePageState extends State<TreePage>
     );
   }
 
-
   Widget getBody() {
     return Column(
       children: <Widget>[
         Expanded(
             child: ListTreeView(
-              itemBuilder: (BuildContext context, int index, int level,
-                  bool isExpand, dynamic data) {
-                TreeNodeData item = data;
+          itemBuilder: (BuildContext context, NodeData data) {
+            TreeNodeData item = data;
 //              double width = MediaQuery.of(context).size.width;
-                double offsetX = level * 16.0;
-                return Container(
-                  padding: EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(width: 1, color: Colors.grey))),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: offsetX),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                '$index',
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                '${item.label}',
-                                style: TextStyle(color: item.color),
-                              ),
-                            ],
+            double offsetX = item.level * 16.0;
+            return Container(
+              height: 54,
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                  border:
+                      Border(bottom: BorderSide(width: 1, color: Colors.grey))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: offsetX),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(right: 5),
+                            child: InkWell(
+                              splashColor: Colors.amberAccent.withOpacity(1),
+                              highlightColor: Colors.red,
+                              onTap: () {
+                                selectAllChild(item);
+                              },
+                              child: data.isSelected
+                                  ? Icon(
+                                      Icons.star,
+                                      size: 30,
+                                      color: Color(0xFFFF7F50),
+                                    )
+                                  : Icon(
+                                      Icons.star_border,
+                                      size: 30,
+                                      color: Color(0xFFFFDAB9),
+                                    ),
+                            ),
                           ),
-                        ),
+                          Text(
+                            'level-${item.level}-${item.indexInParent}',
+                            style: TextStyle(
+                                fontSize: 15, color: getColor(item.level)),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+//                          Text(
+//                            '${item.label}',
+//                            style: TextStyle(color: item.color),
+//                          ),
+                        ],
                       ),
-                      Visibility(
-                        visible: isExpand,
-                        child: InkWell(
-                          onTap: () {
-                            add(item);
-                          },
-                          child: Icon(
-                            Icons.add,
-                            size: 30,
-                          ),
-                        ),
-                      )
-                    ],
+                    ),
                   ),
-                );
-              },
-              onTap: (index, level, isExpand, data) {
-                print('index = $index');
-              },
-              onLongPress: (index, level, isExpand, data) {
-                delete(data);
-              },
-              controller: _controller,
-            )),
+                  Visibility(
+                    visible: item.isExpand,
+                    child: InkWell(
+                      onTap: () {
+                        add(item);
+                      },
+                      child: Icon(
+                        Icons.add,
+                        size: 30,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+          onTap: (NodeData data) {
+            print('index = ${data.index}');
+          },
+          onLongPress: (data) {
+            delete(data);
+          },
+          controller: _controller,
+        )),
       ],
     );
   }
-
-
-
 }

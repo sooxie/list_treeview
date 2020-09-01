@@ -1,3 +1,11 @@
+# 0.2.3
+
+- Add the selected method
+
+# 0.2.2
+
+- Added a way to disable implicit node toggling
+
 # 0.2.0
 
 - The controller must be initialized when the treeView create

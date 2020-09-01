@@ -37,7 +37,7 @@ class ListTreeView extends StatefulWidget {
     this.onLongPress,
     this.controller,
     this.toggleNodeOnTap = true,
-  });
+  }) : assert(controller != null, "The TreeViewController can't be empty");
 
   final IndexedBuilder itemBuilder;
   final PressCallback onLongPress;
@@ -59,7 +59,6 @@ class _ListTreeViewState extends State<ListTreeView> {
   @override
   void initState() {
     super.initState();
-
     widget.controller.addListener(updateView);
   }
 
@@ -79,7 +78,7 @@ class _ListTreeViewState extends State<ListTreeView> {
         widget.controller.data == null ||
         widget.controller.data.length == 0) {
       return Center(
-        child: Text('No data'),
+        child: Text(''),
       );
     }
 
@@ -90,23 +89,29 @@ class _ListTreeViewState extends State<ListTreeView> {
         TreeNode treeNode = widget.controller.treeNodeOfIndex(index);
 
         ///The level of the current item
-        int level = widget.controller.levelOfNode(treeNode.item);
-        bool isExpand = widget.controller.isExpanded(treeNode.item);
+        treeNode.item.level = widget.controller.levelOfNode(treeNode.item);
+        treeNode.item.isExpand = widget.controller.isExpanded(treeNode.item);
+        treeNode.item.index = index;
+        NodeData parent = widget.controller.parentOfItem(treeNode.item);
+        if (parent != null && parent.children.length > 0) {
+          treeNode.item.indexInParent = parent.children.indexOf(treeNode.item);
+        } else {
+          treeNode.item.indexInParent = 0;
+        }
 
         ///Your event is passed through the [Function] with the relevant data
         return InkWell(
           onLongPress: () {
-            widget.onLongPress(index, level, isExpand, treeNode.item);
+            widget.onLongPress(treeNode.item);
           },
           onTap: () {
             if (widget.toggleNodeOnTap) {
               itemClick(index);
             }
-            widget.onTap(index, level, isExpand, treeNode.item);
+            widget.onTap(treeNode.item);
           },
           child: Container(
-            child: widget.itemBuilder(
-                context, index, level, isExpand, treeNode.item),
+            child: widget.itemBuilder(context, treeNode.item),
           ),
         );
       },
