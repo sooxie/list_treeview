@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:list_treeview/list_treeview.dart';
 
 typedef WidgetBuilder = Widget Function(BuildContext context);
-typedef ExpandCallback = bool Function(dynamic item);
+typedef ExpandCallback = bool Function(NodeData item);
 typedef IndexedBuilder = Widget Function(BuildContext context, NodeData data);
 
 typedef PressCallback = Function(NodeData item);

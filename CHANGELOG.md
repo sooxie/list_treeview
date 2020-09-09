@@ -1,3 +1,12 @@
+# 0.2.5
+
+- Add properties such as shrinkWrap,padding and reverse
+
+
+# 0.2.4
+
+- Fix some bug
+
 # 0.2.3
 
 - Add the selected method

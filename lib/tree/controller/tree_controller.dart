@@ -356,9 +356,9 @@ class TreeViewController extends ChangeNotifier {
         controller = NodeController(
             parent: parentController,
             nodeItem: lazyItem,
-            expandCallback: (dynamic item) {
+            expandCallback: (NodeData item) {
               bool result = false;
-              children.forEach((item) {
+              children.forEach((controller) {
                 if (controller.treeNode.item == item) {
                   result = true;
                 }

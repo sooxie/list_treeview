@@ -8,7 +8,7 @@
 
 
 ![avatar](./images/tree.gif)
-![avatar](./images/screen3.png)
+![avatar](./images/screen3.jpg)
 
 
 

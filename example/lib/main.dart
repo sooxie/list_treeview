@@ -202,92 +202,88 @@ class _TreePageState extends State<TreePage>
   }
 
   Widget getBody() {
-    return Column(
-      children: <Widget>[
-        Expanded(
-            child: ListTreeView(
-          itemBuilder: (BuildContext context, NodeData data) {
-            TreeNodeData item = data;
+    return ListTreeView(
+      shrinkWrap: false,
+      padding: EdgeInsets.all(0),
+      itemBuilder: (BuildContext context, NodeData data) {
+        TreeNodeData item = data;
 //              double width = MediaQuery.of(context).size.width;
-            double offsetX = item.level * 16.0;
-            return Container(
-              height: 54,
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                  border:
-                      Border(bottom: BorderSide(width: 1, color: Colors.grey))),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: offsetX),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(right: 5),
-                            child: InkWell(
-                              splashColor: Colors.amberAccent.withOpacity(1),
-                              highlightColor: Colors.red,
-                              onTap: () {
-                                selectAllChild(item);
-                              },
-                              child: data.isSelected
-                                  ? Icon(
-                                      Icons.star,
-                                      size: 30,
-                                      color: Color(0xFFFF7F50),
-                                    )
-                                  : Icon(
-                                      Icons.star_border,
-                                      size: 30,
-                                      color: Color(0xFFFFDAB9),
-                                    ),
-                            ),
-                          ),
-                          Text(
-                            'level-${item.level}-${item.indexInParent}',
-                            style: TextStyle(
-                                fontSize: 15, color: getColor(item.level)),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
+        double offsetX = item.level * 16.0;
+        return Container(
+          height: 54,
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(width: 1, color: Colors.grey))),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: offsetX),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(right: 5),
+                        child: InkWell(
+                          splashColor: Colors.amberAccent.withOpacity(1),
+                          highlightColor: Colors.red,
+                          onTap: () {
+                            selectAllChild(item);
+                          },
+                          child: data.isSelected
+                              ? Icon(
+                                  Icons.star,
+                                  size: 30,
+                                  color: Color(0xFFFF7F50),
+                                )
+                              : Icon(
+                                  Icons.star_border,
+                                  size: 30,
+                                  color: Color(0xFFFFDAB9),
+                                ),
+                        ),
+                      ),
+                      Text(
+                        'level-${item.level}-${item.indexInParent}',
+                        style: TextStyle(
+                            fontSize: 15, color: getColor(item.level)),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
 //                          Text(
 //                            '${item.label}',
 //                            style: TextStyle(color: item.color),
 //                          ),
-                        ],
-                      ),
-                    ),
+                    ],
                   ),
-                  Visibility(
-                    visible: item.isExpand,
-                    child: InkWell(
-                      onTap: () {
-                        add(item);
-                      },
-                      child: Icon(
-                        Icons.add,
-                        size: 30,
-                      ),
-                    ),
-                  )
-                ],
+                ),
               ),
-            );
-          },
-          onTap: (NodeData data) {
-            print('index = ${data.index}');
-          },
-          onLongPress: (data) {
-            delete(data);
-          },
-          controller: _controller,
-        )),
-      ],
+              Visibility(
+                visible: item.isExpand,
+                child: InkWell(
+                  onTap: () {
+                    add(item);
+                  },
+                  child: Icon(
+                    Icons.add,
+                    size: 30,
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      },
+      onTap: (NodeData data) {
+        print('index = ${data.index}');
+      },
+      onLongPress: (data) {
+        delete(data);
+      },
+      controller: _controller,
     );
   }
 }

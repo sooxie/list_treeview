@@ -17,6 +17,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'controller/tree_controller.dart';
 import 'node/tree_node.dart';
@@ -37,12 +39,22 @@ class ListTreeView extends StatefulWidget {
     this.onLongPress,
     this.controller,
     this.toggleNodeOnTap = true,
+    this.shrinkWrap = false,
+    this.removeTop = true,
+    this.removeBottom = true,
+    this.reverse = false,
+    this.padding = const EdgeInsets.all(0),
   }) : assert(controller != null, "The TreeViewController can't be empty");
 
   final IndexedBuilder itemBuilder;
   final PressCallback onLongPress;
   final TreeViewController controller;
   final PressCallback onTap;
+  final bool shrinkWrap;
+  final bool removeBottom;
+  final bool removeTop;
+  final bool reverse;
+  final EdgeInsetsGeometry padding;
 
   /// If `false` you have to explicitly expand or collapse nodes.
   ///
@@ -82,40 +94,53 @@ class _ListTreeViewState extends State<ListTreeView> {
       );
     }
 
-    return ListView.builder(
-      itemBuilder: (BuildContext context, int index) {
+    return Container(
+      child: MediaQuery.removePadding(
+          removeBottom: widget.removeBottom,
+          removeTop: widget.removeTop,
+          context: context,
+          child: ListView.builder(
+            physics: BouncingScrollPhysics(),
+            padding: widget.padding,
+            reverse: widget.reverse,
+            shrinkWrap: widget.shrinkWrap,
+            itemBuilder: (BuildContext context, int index) {
 //        int num = widget.controller.numberOfVisibleChild();
-        ///The [TreeNode] associated with the current item
-        TreeNode treeNode = widget.controller.treeNodeOfIndex(index);
+              ///The [TreeNode] associated with the current item
+              TreeNode treeNode = widget.controller.treeNodeOfIndex(index);
 
-        ///The level of the current item
-        treeNode.item.level = widget.controller.levelOfNode(treeNode.item);
-        treeNode.item.isExpand = widget.controller.isExpanded(treeNode.item);
-        treeNode.item.index = index;
-        NodeData parent = widget.controller.parentOfItem(treeNode.item);
-        if (parent != null && parent.children.length > 0) {
-          treeNode.item.indexInParent = parent.children.indexOf(treeNode.item);
-        } else {
-          treeNode.item.indexInParent = 0;
-        }
+              ///The level of the current item
+              treeNode.item.level =
+                  widget.controller.levelOfNode(treeNode.item);
+              treeNode.item.isExpand =
+                  widget.controller.isExpanded(treeNode.item);
+              treeNode.item.index = index;
+              NodeData parent = widget.controller.parentOfItem(treeNode.item);
+              if (parent != null && parent.children.length > 0) {
+                treeNode.item.indexInParent =
+                    parent.children.indexOf(treeNode.item);
+              } else {
+                treeNode.item.indexInParent = 0;
+              }
 
-        ///Your event is passed through the [Function] with the relevant data
-        return InkWell(
-          onLongPress: () {
-            widget.onLongPress(treeNode.item);
-          },
-          onTap: () {
-            if (widget.toggleNodeOnTap) {
-              itemClick(index);
-            }
-            widget.onTap(treeNode.item);
-          },
-          child: Container(
-            child: widget.itemBuilder(context, treeNode.item),
-          ),
-        );
-      },
-      itemCount: widget.controller.numberOfVisibleChild(),
+              ///Your event is passed through the [Function] with the relevant data
+              return InkWell(
+                onLongPress: () {
+                  widget.onLongPress(treeNode.item);
+                },
+                onTap: () {
+                  if (widget.toggleNodeOnTap) {
+                    itemClick(index);
+                  }
+                  widget.onTap(treeNode.item);
+                },
+                child: Container(
+                  child: widget.itemBuilder(context, treeNode.item),
+                ),
+              );
+            },
+            itemCount: widget.controller.numberOfVisibleChild(),
+          )),
     );
   }
 }
