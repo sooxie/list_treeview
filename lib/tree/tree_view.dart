@@ -34,7 +34,7 @@ import 'tree_define.dart';
 
 class ListTreeView extends StatefulWidget {
   ListTreeView({
-    @required this.itemBuilder,
+    required this.itemBuilder,
     this.onTap,
     this.onLongPress,
     this.controller,

@@ -78,8 +78,8 @@ class TreePage extends StatefulWidget {
 
 class _TreePageState extends State<TreePage>
     with SingleTickerProviderStateMixin {
-  TreeViewController _controller;
-  bool _isSuccess;
+  TreeViewController? _controller;
+  bool _isSuccess = false;
   List<Color> _colors = [];
   @override
   void initState() {
@@ -132,7 +132,7 @@ class _TreePageState extends State<TreePage>
     colors2.addChild(color24);
 
     /// set data
-    _controller.treeData([colors1, colors2]);
+    _controller!.treeData([colors1, colors2]);
     print('set treeData suceess');
 
     setState(() {
@@ -168,21 +168,21 @@ class _TreePageState extends State<TreePage>
     var newNode = TreeNodeData(
         label: 'rgb($r,$g,$b)', color: Color.fromARGB(255, r, g, b));
 
-    _controller.insertAtFront(dataNode, newNode);
+    _controller!.insertAtFront(dataNode, newNode);
 //    _controller.insertAtRear(dataNode, newNode);
 //    _controller.insertAtIndex(1, dataNode, newNode);
   }
 
   void delete(dynamic item) {
-    _controller.removeItem(item);
+    _controller!.removeItem(item);
   }
 
   void select(dynamic item) {
-    _controller.selectItem(item);
+    _controller!.selectItem(item);
   }
 
   void selectAllChild(dynamic item) {
-    _controller.selectAllChild(item);
+    _controller!.selectAllChild(item);
   }
 
   @override
@@ -206,7 +206,7 @@ class _TreePageState extends State<TreePage>
       shrinkWrap: false,
       padding: EdgeInsets.all(0),
       itemBuilder: (BuildContext context, NodeData data) {
-        TreeNodeData item = data;
+        TreeNodeData item = data as TreeNodeData;
 //              double width = MediaQuery.of(context).size.width;
         double offsetX = item.level * 16.0;
         return Container(
