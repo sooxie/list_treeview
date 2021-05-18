@@ -47,9 +47,9 @@ class ListTreeView extends StatefulWidget {
   }) : assert(controller != null, "The TreeViewController can't be empty");
 
   final IndexedBuilder itemBuilder;
-  final PressCallback onLongPress;
-  final TreeViewController controller;
-  final PressCallback onTap;
+  final PressCallback? onLongPress;
+  final TreeViewController? controller;
+  final PressCallback? onTap;
   final bool shrinkWrap;
   final bool removeBottom;
   final bool removeTop;
@@ -71,7 +71,7 @@ class _ListTreeViewState extends State<ListTreeView> {
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(updateView);
+    widget.controller?.addListener(updateView);
   }
 
   /// update view
@@ -81,14 +81,14 @@ class _ListTreeViewState extends State<ListTreeView> {
 
   /// expand or collapse children
   void itemClick(int index) {
-    widget.controller.expandOrCollapse(index);
+    widget.controller?.expandOrCollapse(index);
   }
 
   @override
   Widget build(BuildContext context) {
     if (widget.controller == null ||
-        widget.controller.data == null ||
-        widget.controller.data.length == 0) {
+        widget.controller!.data == null ||
+        widget.controller!.data!.length == 0) {
       return Center(
         child: Text(''),
       );
@@ -107,39 +107,43 @@ class _ListTreeViewState extends State<ListTreeView> {
             itemBuilder: (BuildContext context, int index) {
 //        int num = widget.controller.numberOfVisibleChild();
               ///The [TreeNode] associated with the current item
-              TreeNode treeNode = widget.controller.treeNodeOfIndex(index);
+              TreeNode treeNode = widget.controller!.treeNodeOfIndex(index);
 
               ///The level of the current item
-              treeNode.item.level =
-                  widget.controller.levelOfNode(treeNode.item);
-              treeNode.item.isExpand =
-                  widget.controller.isExpanded(treeNode.item);
-              treeNode.item.index = index;
-              NodeData parent = widget.controller.parentOfItem(treeNode.item);
+              treeNode.item!.level =
+                  widget.controller!.levelOfNode(treeNode.item);
+              treeNode.item!.isExpand =
+                  widget.controller!.isExpanded(treeNode.item);
+              treeNode.item!.index = index;
+              NodeData? parent = widget.controller!.parentOfItem(treeNode.item);
               if (parent != null && parent.children.length > 0) {
-                treeNode.item.indexInParent =
-                    parent.children.indexOf(treeNode.item);
+                treeNode.item!.indexInParent =
+                    parent.children.indexOf(treeNode.item!);
               } else {
-                treeNode.item.indexInParent = 0;
+                treeNode.item!.indexInParent = 0;
               }
 
               ///Your event is passed through the [Function] with the relevant data
               return InkWell(
                 onLongPress: () {
-                  widget.onLongPress(treeNode.item);
+                  if (widget.onLongPress != null) {
+                    widget.onLongPress!(treeNode.item!);
+                  }
                 },
                 onTap: () {
                   if (widget.toggleNodeOnTap) {
                     itemClick(index);
                   }
-                  widget.onTap(treeNode.item);
+                  if (widget.onTap != null) {
+                    widget.onTap!(treeNode.item!);
+                  }
                 },
                 child: Container(
-                  child: widget.itemBuilder(context, treeNode.item),
+                  child: widget.itemBuilder(context, treeNode.item!),
                 ),
               );
             },
-            itemCount: widget.controller.numberOfVisibleChild(),
+            itemCount: widget.controller?.numberOfVisibleChild(),
           )),
     );
   }

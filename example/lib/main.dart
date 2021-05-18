@@ -58,12 +58,12 @@ class TreeNodeData extends NodeData {
   TreeNodeData({this.label, this.color}) : super();
 
   /// Other properties that you want to define
-  final String label;
-  final Color color;
+  final String? label;
+  final Color? color;
 
-  String property1;
-  String property2;
-  String property3;
+  String? property1;
+  String? property2;
+  String? property3;
 
   ///...
 }
@@ -132,7 +132,7 @@ class _TreePageState extends State<TreePage>
     colors2.addChild(color24);
 
     /// set data
-    _controller!.treeData([colors1, colors2]);
+    _controller!.treeData([colors1]);
     print('set treeData suceess');
 
     setState(() {

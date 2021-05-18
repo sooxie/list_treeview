@@ -1,6 +1,7 @@
-# 0.2.5
+# 0.3.0
 
-- Add properties such as shrinkWrap,padding and reverse
+- flutter 2.0 null safety support
+- Fix some bugs
 
 
 # 0.2.4

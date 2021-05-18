@@ -24,20 +24,20 @@ class TreeNode<T> {
   TreeNode({this.lazyItem, this.expandCallback});
 
   bool _expanded = false;
-  ExpandCallback expandCallback;
+  ExpandCallback? expandCallback;
 
-  final TreeNodeItem lazyItem;
+  final TreeNodeItem? lazyItem;
 
-  NodeData get item {
+  NodeData? get item {
     if (lazyItem != null) {
-      return lazyItem.item;
+      return lazyItem!.item;
     }
     return null;
   }
 
   bool get expanded {
     if (expandCallback != null) {
-      _expanded = expandCallback(this.item);
+      _expanded = expandCallback!(this.item);
     }
     return _expanded;
   }
@@ -52,15 +52,15 @@ class TreeNodeItem {
   TreeNodeItem({this.parent, this.index, this.controller});
 
   final dynamic parent;
-  final int index;
-  final TreeViewController controller;
-  NodeData _item;
+  final int? index;
+  final TreeViewController? controller;
+  NodeData? _item;
 
   NodeData get item {
     if (_item == null) {
-      _item = controller.dataForTreeNode(this);
+      _item = controller!.dataForTreeNode(this);
     }
-    return _item;
+    return _item!;
   }
 }
 

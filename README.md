@@ -5,7 +5,8 @@
 - Performance is efficient because of the Listview's reuse mechanism.
 - Infinitely increasing child levels and child nodes
 
-
+## Flutter 2.0 support
+- flutter 2.0 null safety support in version **0.3.0**
 
 ![avatar](./images/tree.gif)
 ![avatar](./images/screen3.jpg)

@@ -31,11 +31,11 @@ class NodeController {
         _numberOfVisibleChildren = min,
         _mutableChildControllers = [];
 
-  final NodeController parent;
-  final TreeNodeItem nodeItem;
+  final NodeController? parent;
+  final TreeNodeItem? nodeItem;
   final TreeNode treeNode;
 
-  final ExpandCallback expandCallback;
+  final ExpandCallback? expandCallback;
 
   int _index;
   List<NodeController> _mutableChildControllers;
@@ -59,7 +59,7 @@ class NodeController {
   }
 
   /// Gets the controller associated with the data
-  NodeController controllerOfItem(dynamic item) {
+  NodeController? controllerOfItem(dynamic item) {
     if (item == treeNode.item) {
       return this;
     }
@@ -73,7 +73,7 @@ class NodeController {
   }
 
   ///
-  void addChildController(List<NodeController> controllers) {
+  void addChildController(List<NodeController>? controllers) {
     if (controllers == null || controllers.length == 0) {
       return;
     }
@@ -82,7 +82,7 @@ class NodeController {
   }
 
   void insertChildControllers(
-      List<NodeController> controllers, List<int> indexes) {
+      List<NodeController>? controllers, List<int> indexes) {
     if (controllers == null || controllers.length == 0) {
       return;
     }
@@ -93,7 +93,7 @@ class NodeController {
     resetNodesAfterChildAtIndex(min);
   }
 
-  void insertNewChildControllers(NodeController controller, int index) {
+  void insertNewChildControllers(NodeController? controller, int index) {
     if (controller == null) {
       return;
     }
@@ -120,8 +120,8 @@ class NodeController {
     if (parent == null) {
       selfIndex = 0;
     } else {
-      selfIndex = parent.childControllers.indexOf(this);
-      parent.resetNodesAfterChildAtIndex(selfIndex);
+      selfIndex = parent!.childControllers.indexOf(this);
+      parent!.resetNodesAfterChildAtIndex(selfIndex);
     }
 
     resetData();
@@ -158,7 +158,7 @@ class NodeController {
       }
     }
 
-    parent.resetNodesAfterChildAtIndex(parent.childControllers.indexOf(this));
+    parent!.resetNodesAfterChildAtIndex(parent!.childControllers.indexOf(this));
   }
 
   ///collapse
@@ -172,12 +172,12 @@ class NodeController {
         controller.collapseAndCollapseChildren(collapseChildren);
       }
     }
-    parent.resetNodesAfterChildAtIndex(parent.childControllers.indexOf(this));
+    parent!.resetNodesAfterChildAtIndex(parent!.childControllers.indexOf(this));
   }
 
   /// Collapsing and expanding - end
   int numberOfVisibleDescendants() {
-    if (this.treeNode != null && this.treeNode.expanded) {
+    if (this.treeNode.expanded) {
       int sum = this.childControllers.length;
       this.childControllers.forEach((item) {
         sum += item.numberOfVisibleDescendants();
@@ -189,7 +189,7 @@ class NodeController {
     return _numberOfVisibleChildren;
   }
 
-  NodeController controllerForIndex(int index) {
+  NodeController? controllerForIndex(int index) {
     if (this.index == index) {
       return this;
     }
@@ -212,15 +212,15 @@ class NodeController {
     }
     if (parent == null) {
       _index = -1;
-    } else if (!parent.treeNode.expanded) {
+    } else if (!parent!.treeNode.expanded) {
       _index = -1;
     } else {
-      var indexOf = parent.childControllers.indexOf(this);
+      var indexOf = parent!.childControllers.indexOf(this);
       if (indexOf != 0) {
-        var controller = parent.childControllers[indexOf - 1];
+        var controller = parent!.childControllers[indexOf - 1];
         _index = controller.lastVisibleDescendatIndex + 1;
       } else {
-        _index = parent.index + 1;
+        _index = parent!.index + 1;
       }
     }
     return _index;
@@ -250,7 +250,7 @@ class NodeController {
       return -1;
     }
     if (_level == min) {
-      _level = parent.level + 1;
+      _level = parent!.level + 1;
     }
     return _level;
   }
