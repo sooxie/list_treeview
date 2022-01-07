@@ -76,7 +76,9 @@ class _ListTreeViewState extends State<ListTreeView> {
 
   /// update view
   void updateView() {
-    setState(() => {});
+    if (mounted) {
+      setState(() => {});
+    }
   }
 
   /// expand or collapse children
