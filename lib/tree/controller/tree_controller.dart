@@ -198,7 +198,6 @@ class TreeViewController extends ChangeNotifier {
 
   ///Gets the number of visible children of the ListTreeView
   int numberOfVisibleChild() {
-    final num = this.rootController.numberOfVisibleDescendants();
     return this.rootController.numberOfVisibleDescendants();
   }
 
@@ -272,12 +271,6 @@ class TreeViewController extends ChangeNotifier {
       controller.removeChildControllers(indexesForDeletions);
       controller.insertChildControllers(
           childControllersToInsert, indexesForInsertions);
-      bool expandChildren = false;
-      if (expandChildren) {
-        for (NodeController nodeController in controller.childControllers) {
-          items.add(nodeController.treeNode.item);
-        }
-      }
       controller.expandAndExpandChildren(false);
       notifyListeners();
     }
