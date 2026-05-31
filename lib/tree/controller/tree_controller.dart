@@ -458,7 +458,7 @@ class TreeViewController extends ChangeNotifier {
 
   ///Gets the data information for the parent node
   NodeData? parentOfItem(dynamic item) {
-    NodeController controller = _rootController!.controllerOfItem(item)!;
-    return controller.parent?.treeNode.item;
+    NodeController? controller = rootController.controllerOfItem(item);
+    return controller?.parent?.treeNode.item;
   }
 }

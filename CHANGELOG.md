@@ -1,8 +1,10 @@
+# 0.4.2
+
+- Fix `parentOfItem()` throwing a null-check exception after replacing the controller's tree data.
+
 # 0.4.1
 
-- Fix `RangeError` when expanding a node after appending a child to it while it
-  was collapsed (`insertChildControllers` indexed the controller list with the
-  insertion position instead of the controller's own position)
+- Fix `RangeError` when expanding a node after appending a child to it while it was collapsed (`insertChildControllers` indexed the controller list with the insertion position instead of the controller's own position)
 
 # 0.4.0
 

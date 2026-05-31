@@ -79,3 +79,7 @@ build/
 .codex
 .claude
 .antigravitycli
+
+# Local-only examples (not for version control)
+example/lib/examples-local/
+example/lib/main_local.dart
