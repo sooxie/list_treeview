@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:list_treeview/list_treeview.dart';
-import 'package:list_treeview/tree/tree_view.dart';
 
 void main() {
   runApp(MyApp());
@@ -39,12 +38,12 @@ class _HomePageState extends State<HomePage> {
         title: Text('Home'),
       ),
       body: Center(
-        child: RaisedButton(
-          child: Text('TreeView'),
+        child: ElevatedButton(
           onPressed: () {
             Navigator.push(
                 context, CupertinoPageRoute(builder: (_) => TreePage()));
           },
+          child: Text('TreeView'),
         ),
       ),
     );
@@ -89,16 +88,11 @@ class _TreePageState extends State<TreePage>
     _controller = TreeViewController();
 
     for (int i = 0; i < 100; i++) {
-      if (randomColor() != null) {
-        _colors.add(randomColor());
-      }
+      _colors.add(randomColor());
     }
-
 
     ///Data may be requested asynchronously
     getData();
-
-
   }
 
   void getData() async {

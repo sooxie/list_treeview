@@ -1,3 +1,10 @@
+# 0.3.1
+
+- Flutter 3.0+ / Dart 3 support
+- Remove unused `dart:io` import so the package works on Flutter Web
+- Clean up analyzer warnings (unused variable, dead code)
+- Migrate example to `ElevatedButton` (`RaisedButton` was removed in Flutter 3.0)
+
 # 0.3.0
 
 - flutter 2.0 null safety support
