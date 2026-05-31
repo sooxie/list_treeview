@@ -1,4 +1,4 @@
-# 0.3.1
+# 0.4.0
 
 - Flutter 3.0+ / Dart 3 support
 - Remove unused `dart:io` import so the package works on Flutter Web
