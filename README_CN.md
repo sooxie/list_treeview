@@ -172,9 +172,16 @@ _controller.removeItem(item);
 /// 切换可见 [index] 处的节点（例如 `item.index`）。
 _controller.expandOrCollapse(item.index);
 
+/// 一次性展开或折叠整棵树。
+_controller.expandAll();
+_controller.collapseAll();
+
 /// 查询当前状态。
 final expanded = _controller.isExpanded(item);
 ```
+
+> **懒加载说明：** 子节点控制器只会在父节点展开时创建，因此 `expandAll()` 会展开树中
+> 所有已加载子节点的节点。异步获取子节点的节点会先跳过，直到其子节点加载完成。
 
 ### 选中
 
@@ -217,6 +224,8 @@ _controller.selectAllChild(item);
 | `removeItem(item)`                                    | `void`      | 从树中移除 `item`。                           |
 | `expandOrCollapse(index)`                             | `TreeNode`  | 切换可见 `index` 处节点的展开状态。           |
 | `expandItem(treeNode)` / `collapseItem(treeNode)`     | `void`      | 展开 / 折叠某个节点。                         |
+| `expandAll()`                                         | `void`      | 展开树中每个（已加载的）节点。                |
+| `collapseAll()`                                       | `void`      | 折叠树中的每个节点。                          |
 | `isExpanded(item)`                                    | `bool`      | `item` 是否处于展开状态。                     |
 | `selectItem(item)`                                    | `void`      | 切换 `item` 的选中状态。                      |
 | `selectAllChild(item)`                                | `void`      | 切换 `item` 及其所有子孙节点的选中状态。      |
@@ -244,7 +253,14 @@ _controller.selectAllChild(item);
 
 ## 示例
 
-完整可运行的示例位于 [`example`](./example) 目录。运行方式：
+[`example`](./example) 目录是一组可运行的功能示例，每个示例都有独立的详情页：
+
+- **基础与全部展开** — 包含嵌套树，以及全部展开 / 全部折叠工具栏操作。
+- **插入与删除** — 从任意行添加子节点，并删除整棵子树。
+- **选择** — 选中某个节点及其所有子孙节点。
+- **异步懒加载** — 首次点击分支时获取其子节点。
+
+运行方式：
 
 ```bash
 cd example

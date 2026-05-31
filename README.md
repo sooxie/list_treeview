@@ -177,9 +177,18 @@ _controller.removeItem(item);
 /// Toggle the node at a visible [index] (e.g. `item.index`).
 _controller.expandOrCollapse(item.index);
 
+/// Expand or collapse the whole tree at once.
+_controller.expandAll();
+_controller.collapseAll();
+
 /// Query the current state.
 final expanded = _controller.isExpanded(item);
 ```
+
+> **Lazy loading note:** child controllers are created only when a parent
+> expands, so `expandAll()` expands every node whose children are already
+> loaded. Nodes that fetch their children asynchronously are skipped until they
+> have been loaded.
 
 ### Select
 
@@ -222,6 +231,8 @@ Read the result via `item.isSelected` inside your `itemBuilder`.
 | `removeItem(item)`                                    | `void`      | Removes `item` from the tree.                           |
 | `expandOrCollapse(index)`                             | `TreeNode`  | Toggles the node at the visible `index`.                |
 | `expandItem(treeNode)` / `collapseItem(treeNode)`     | `void`      | Expands / collapses a node.                             |
+| `expandAll()`                                         | `void`      | Expands every (loaded) node in the tree.               |
+| `collapseAll()`                                       | `void`      | Collapses every node in the tree.                      |
 | `isExpanded(item)`                                    | `bool`      | Whether `item` is expanded.                             |
 | `selectItem(item)`                                    | `void`      | Toggles the selection of `item`.                        |
 | `selectAllChild(item)`                                | `void`      | Toggles the selection of `item` and all descendants.    |
@@ -249,8 +260,16 @@ date, so you can read them inside `itemBuilder`:
 
 ## Example
 
-A complete, runnable example lives in the [`example`](./example) directory. Run
-it with:
+The [`example`](./example) directory is a gallery of focused, runnable demos,
+each on its own detail page:
+
+- **Basic & Expand All** — a nested tree with expand-all / collapse-all toolbar
+  actions.
+- **Insert & Remove** — add child nodes from any row and remove subtrees.
+- **Selection** — select a node together with all of its descendants.
+- **Async Lazy Load** — fetch a branch's children on first tap.
+
+Run it with:
 
 ```bash
 cd example
