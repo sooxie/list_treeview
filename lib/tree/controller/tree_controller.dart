@@ -76,8 +76,13 @@ class TreeViewController extends ChangeNotifier {
         return;
       }
     }
-    parent!.children.insert(0, newNode);
-    _insertItemAtIndex(0, parent);
+    if (parent == null) {
+      data!.insert(0, newNode);
+      _insertRootControllerAt(0);
+    } else {
+      parent.children.insert(0, newNode);
+      _insertItemAtIndex(0, parent);
+    }
     notifyListeners();
   }
 
@@ -108,8 +113,13 @@ class TreeViewController extends ChangeNotifier {
         return;
       }
     }
-    parent!.children.add(newNode);
-    _insertItemAtIndex(0, parent, isFront: false);
+    if (parent == null) {
+      data!.add(newNode);
+      _insertRootControllerAt(data!.length - 1);
+    } else {
+      parent.children.add(newNode);
+      _insertItemAtIndex(0, parent, isFront: false);
+    }
     notifyListeners();
   }
 
@@ -117,15 +127,23 @@ class TreeViewController extends ChangeNotifier {
   /// The [index] value must be non-negative and no greater than [length].
   void insertAtIndex(int index, dynamic parent, NodeData newNode,
       {bool closeCanInsert = false}) {
+    if (parent == null) {
+      assert(index <= data!.length);
+      if (!closeCanInsert) {
+        data!.insert(index, newNode);
+        _insertRootControllerAt(index);
+        notifyListeners();
+      }
+      return;
+    }
     assert(index <= parent.children.length);
     if (!closeCanInsert) {
-      if (parent != null && !isExpanded(parent)) {
+      if (!isExpanded(parent)) {
         return;
       }
     }
     parent.children.insert(index, newNode);
     _insertItemAtIndex(index, parent, isIndex: true);
-
     notifyListeners();
   }
 
@@ -325,6 +343,13 @@ class TreeViewController extends ChangeNotifier {
       controller.expandAndExpandChildren(false);
       notifyListeners();
     }
+  }
+
+  /// Inserts a new root-level controller at [index] in the root controller's
+  /// child list, mirroring a direct insertion into [data].
+  void _insertRootControllerAt(int index) {
+    var newControllers = createNodeController(rootController, [index]);
+    rootController.insertChildControllers(newControllers, [index]);
   }
 
   void _insertItemAtIndex(int index, dynamic parent,

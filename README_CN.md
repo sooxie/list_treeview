@@ -170,6 +170,14 @@ _controller.insertAtIndex(1, parent, newNode);
 _controller.insertAllAtFront(parent, [nodeA, nodeB]);
 ```
 
+将 `parent` 传为 `null` 可在**根级别**插入节点：
+
+```dart
+_controller.insertAtFront(null, newNode);    // 在根级头部插入
+_controller.insertAtRear(null, newNode);     // 在根级尾部追加
+_controller.insertAtIndex(1, null, newNode); // 在根级索引 1 处插入
+```
+
 默认只有当父节点处于展开状态时才会插入。传入 `closeCanInsert: true` 可在父节点折叠
 时也插入：
 
@@ -234,10 +242,10 @@ _controller.selectAllChild(item);
 | 方法                                                  | 返回值      | 说明                                          |
 | ----------------------------------------------------- | ----------- | --------------------------------------------- |
 | `treeData(List? data)`                                | `void`      | 设置根级节点。                                |
-| `insertAtFront(parent, node, {closeCanInsert})`       | `void`      | 将 `node` 作为 `parent` 的第一个子节点插入。  |
-| `insertAllAtFront(parent, nodes, {closeCanInsert})`   | `void`      | 在头部插入多个节点。                          |
-| `insertAtRear(parent, node, {closeCanInsert})`        | `void`      | 将 `node` 追加为最后一个子节点。              |
-| `insertAtIndex(index, parent, node, {closeCanInsert})`| `void`      | 在 `index` 处插入 `node`。                    |
+| `insertAtFront(parent, node, {closeCanInsert})`       | `void`      | 将 `node` 作为 `parent` 的第一个子节点插入。`parent` 为 `null` 时插入根级头部。 |
+| `insertAllAtFront(parent, nodes, {closeCanInsert})`   | `void`      | 在头部插入多个节点。`parent` 为 `null` 时插入根级头部。                         |
+| `insertAtRear(parent, node, {closeCanInsert})`        | `void`      | 将 `node` 追加为最后一个子节点。`parent` 为 `null` 时追加到根级尾部。           |
+| `insertAtIndex(index, parent, node, {closeCanInsert})`| `void`      | 在 `index` 处插入 `node`。`parent` 为 `null` 时操作根级。                       |
 | `removeItem(item)`                                    | `void`      | 从树中移除 `item`。                           |
 | `expandOrCollapse(index)`                             | `TreeNode`  | 切换可见 `index` 处节点的展开状态。           |
 | `expandItem(treeNode)` / `collapseItem(treeNode)`     | `void`      | 展开 / 折叠某个节点。                         |

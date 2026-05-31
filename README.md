@@ -175,6 +175,14 @@ _controller.insertAtIndex(1, parent, newNode);
 _controller.insertAllAtFront(parent, [nodeA, nodeB]);
 ```
 
+Pass `null` as `parent` to insert at the **root level**:
+
+```dart
+_controller.insertAtFront(null, newNode);   // prepend a root node
+_controller.insertAtRear(null, newNode);    // append a root node
+_controller.insertAtIndex(1, null, newNode); // insert at root index 1
+```
+
 By default a node is inserted only when its parent is expanded. Pass
 `closeCanInsert: true` to insert even when the parent is collapsed:
 
@@ -241,10 +249,10 @@ Read the result via `item.isSelected` inside your `itemBuilder`.
 | Method                                                | Returns     | Description                                              |
 | ----------------------------------------------------- | ----------- | ------------------------------------------------------- |
 | `treeData(List? data)`                                | `void`      | Sets the root-level nodes.                              |
-| `insertAtFront(parent, node, {closeCanInsert})`       | `void`      | Inserts `node` as the first child of `parent`.          |
-| `insertAllAtFront(parent, nodes, {closeCanInsert})`   | `void`      | Inserts multiple nodes at the front.                    |
-| `insertAtRear(parent, node, {closeCanInsert})`        | `void`      | Appends `node` as the last child.                       |
-| `insertAtIndex(index, parent, node, {closeCanInsert})`| `void`      | Inserts `node` at `index`.                              |
+| `insertAtFront(parent, node, {closeCanInsert})`       | `void`      | Inserts `node` as the first child of `parent`. Pass `null` for root level. |
+| `insertAllAtFront(parent, nodes, {closeCanInsert})`   | `void`      | Inserts multiple nodes at the front. Pass `null` for root level.           |
+| `insertAtRear(parent, node, {closeCanInsert})`        | `void`      | Appends `node` as the last child. Pass `null` for root level.              |
+| `insertAtIndex(index, parent, node, {closeCanInsert})`| `void`      | Inserts `node` at `index`. Pass `null` for root level.                     |
 | `removeItem(item)`                                    | `void`      | Removes `item` from the tree.                           |
 | `expandOrCollapse(index)`                             | `TreeNode`  | Toggles the node at the visible `index`.                |
 | `expandItem(treeNode)` / `collapseItem(treeNode)`     | `void`      | Expands / collapses a node.                             |

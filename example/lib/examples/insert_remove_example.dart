@@ -11,6 +11,8 @@ import 'shared/tree_node_tile.dart';
 ///
 /// - Tap the "+" button on a row to append a child node.
 /// - Tap the delete button on a row to remove that node (and its subtree).
+/// - Use the toolbar to insert a new root node at the front, rear, or a
+///   specific index (demonstrates passing null as parent).
 class InsertRemoveExample extends StatefulWidget {
   const InsertRemoveExample({Key? key}) : super(key: key);
 
@@ -36,16 +38,10 @@ class _InsertRemoveExampleState extends State<InsertRemoveExample> {
 
   void _addChild(TreeNodeData parent) {
     final newNode = TreeNodeData(label: 'New node ${++_counter}');
-
-    /// closeCanInsert lets us add a child even when the parent is collapsed.
     _controller.insertAtRear(parent, newNode, closeCanInsert: true);
-
-    /// Make sure the new child is visible.
     if (!_controller.isExpanded(parent)) {
       final index = _controller.indexOfItem(parent);
-      if (index != -1) {
-        _controller.expandOrCollapse(index);
-      }
+      if (index != -1) _controller.expandOrCollapse(index);
     }
   }
 
@@ -53,13 +49,35 @@ class _InsertRemoveExampleState extends State<InsertRemoveExample> {
     _controller.removeItem(node);
   }
 
+  /// Insert a new root node at the front (parent = null).
+  void _addRootFront() {
+    _controller.insertAtFront(null, TreeNodeData(label: 'Root ${++_counter}'));
+  }
+
+  /// Append a new root node at the rear (parent = null).
+  void _addRootRear() {
+    _controller.insertAtRear(null, TreeNodeData(label: 'Root ${++_counter}'));
+  }
+
   @override
   Widget build(BuildContext context) {
     return ExampleScaffold(
       title: 'Insert & Remove',
       subtitle:
-          'Append child nodes from any row or remove a node with its entire subtree.',
-      actions: expandCollapseActions(_controller),
+          'Append child nodes from any row, insert root nodes, or remove a node with its subtree.',
+      actions: [
+        ...expandCollapseActions(_controller),
+        IconButton(
+          icon: const Icon(Icons.vertical_align_top),
+          tooltip: 'Add root at front',
+          onPressed: _addRootFront,
+        ),
+        IconButton(
+          icon: const Icon(Icons.vertical_align_bottom),
+          tooltip: 'Add root at rear',
+          onPressed: _addRootRear,
+        ),
+      ],
       child: ListTreeView(
         controller: _controller,
         itemBuilder: (BuildContext context, NodeData data) {
