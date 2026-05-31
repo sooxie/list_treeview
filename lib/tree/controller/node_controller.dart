@@ -86,9 +86,13 @@ class NodeController {
     if (controllers == null || controllers.length == 0) {
       return;
     }
-    indexes.forEach((index) {
-      _mutableChildControllers.insert(index, controllers[index]);
-    });
+    // [indexes[i]] is the position at which [controllers[i]] should be
+    // inserted; iterate by controller position so the two lists stay aligned
+    // even when [indexes] does not start at 0 (e.g. expanding a node whose
+    // children were partially registered while it was collapsed).
+    for (int i = 0; i < controllers.length; i++) {
+      _mutableChildControllers.insert(indexes[i], controllers[i]);
+    }
 
     resetNodesAfterChildAtIndex(min);
   }

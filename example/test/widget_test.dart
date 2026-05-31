@@ -13,10 +13,10 @@ void main() {
   testWidgets('Home page renders with a TreeView button',
       (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+    await tester.pumpWidget(const MyApp());
 
-    // The home page shows an app bar and a button that opens the tree view.
-    expect(find.text('Home'), findsOneWidget);
-    expect(find.text('TreeView'), findsOneWidget);
+    // The home page lists the available tree view examples.
+    expect(find.text('list_treeview'), findsOneWidget);
+    expect(find.text('Basic & Expand All'), findsOneWidget);
   });
 }

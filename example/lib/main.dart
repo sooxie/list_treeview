@@ -1,286 +1,187 @@
-import 'dart:math';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:list_treeview/list_treeview.dart';
+
+import 'examples/examples_registry.dart';
+import 'examples/shared/example_theme.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'list_treeview examples',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: kExamplePrimary),
+        useMaterial3: true,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: kExampleInk,
+          centerTitle: false,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+        iconButtonTheme: IconButtonThemeData(
+          style: IconButton.styleFrom(
+            foregroundColor: kExampleMuted,
+            hoverColor: exampleOpacity(kExamplePrimary, 0.08),
+          ),
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      debugShowCheckedModeBanner: false,
+      home: const HomePage(),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return _HomePageState();
-  }
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-                context, CupertinoPageRoute(builder: (_) => TreePage()));
-          },
-          child: Text('TreeView'),
-        ),
-      ),
-    );
-  }
-}
-
-/// The data class that is bound to the child node
-/// You must inherit from NodeData ！！！
-/// You can customize any of your properties
-class TreeNodeData extends NodeData {
-  TreeNodeData({this.label, this.color}) : super();
-
-  /// Other properties that you want to define
-  final String? label;
-  final Color? color;
-
-  String? property1;
-  String? property2;
-  String? property3;
-
-  ///...
-}
-
-class TreePage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return _TreePageState();
-  }
-}
-
-class _TreePageState extends State<TreePage>
-    with SingleTickerProviderStateMixin {
-  TreeViewController? _controller;
-  bool _isSuccess = false;
-  List<Color> _colors = [];
-  @override
-  void initState() {
-    super.initState();
-
-    ///The controller must be initialized when the treeView create
-    _controller = TreeViewController();
-
-    for (int i = 0; i < 100; i++) {
-      _colors.add(randomColor());
-    }
-
-    ///Data may be requested asynchronously
-    getData();
-  }
-
-  void getData() async {
-    print('start get data');
-    _isSuccess = false;
-    await Future.delayed(Duration(seconds: 2));
-
-    var colors1 = TreeNodeData(label: 'Colors1');
-    var color11 = TreeNodeData(
-        label: 'rgb(0,139,69)', color: Color.fromARGB(255, 0, 139, 69));
-    var color12 = TreeNodeData(
-        label: 'rgb(0,139,69)', color: Color.fromARGB(255, 0, 191, 255));
-    var color13 = TreeNodeData(
-        label: 'rgb(0,139,69)', color: Color.fromARGB(255, 255, 106, 106));
-    var color14 = TreeNodeData(
-        label: 'rgb(0,139,69)', color: Color.fromARGB(255, 160, 32, 240));
-    colors1.addChild(color11);
-    colors1.addChild(color12);
-    colors1.addChild(color13);
-    colors1.addChild(color14);
-
-    var colors2 = TreeNodeData(label: 'Colors2');
-    var color21 = TreeNodeData(
-        label: 'rgb(0,139,69)', color: Color.fromARGB(255, 255, 64, 64));
-    var color22 = TreeNodeData(
-        label: 'rgb(0,139,69)', color: Color.fromARGB(255, 28, 134, 238));
-    var color23 = TreeNodeData(
-        label: 'rgb(0,139,69)', color: Color.fromARGB(255, 255, 106, 106));
-    var color24 = TreeNodeData(
-        label: 'rgb(0,139,69)', color: Color.fromARGB(255, 205, 198, 115));
-    colors2.addChild(color21);
-    colors2.addChild(color22);
-    colors2.addChild(color23);
-    colors2.addChild(color24);
-
-    /// set data
-    _controller!.treeData([colors1]);
-    print('set treeData suceess');
-
-    setState(() {
-      _isSuccess = true;
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  Color getColor(int level) {
-    return _colors[level % _colors.length];
-  }
-
-  Color randomColor() {
-    int r = Random.secure().nextInt(200);
-    int g = Random.secure().nextInt(200);
-    int b = Random.secure().nextInt(200);
-    return Color.fromARGB(255, r, g, b);
-  }
-
-  /// Add
-  void add(TreeNodeData dataNode) {
-    /// create New node
-//    DateTime time = DateTime.now();
-//    int milliseconds = time.millisecondsSinceEpoch ~/ 1000;
-    int r = Random.secure().nextInt(255);
-    int g = Random.secure().nextInt(255);
-    int b = Random.secure().nextInt(255);
-
-    var newNode = TreeNodeData(
-        label: 'rgb($r,$g,$b)', color: Color.fromARGB(255, r, g, b));
-
-    _controller!.insertAtFront(dataNode, newNode);
-//    _controller.insertAtRear(dataNode, newNode);
-//    _controller.insertAtIndex(1, dataNode, newNode);
-  }
-
-  void delete(dynamic item) {
-    _controller!.removeItem(item);
-  }
-
-  void select(dynamic item) {
-    _controller!.selectItem(item);
-  }
-
-  void selectAllChild(dynamic item) {
-    _controller!.selectAllChild(item);
-  }
+/// Lists every example; tapping one pushes its detail page.
+class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('TreeView'),
-      ),
-      body: _isSuccess ? getBody() : getProgressView(),
-    );
-  }
-
-  Widget getProgressView() {
-    return Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-
-  Widget getBody() {
-    return ListTreeView(
-      shrinkWrap: false,
-      padding: EdgeInsets.all(0),
-      itemBuilder: (BuildContext context, NodeData data) {
-        TreeNodeData item = data as TreeNodeData;
-//              double width = MediaQuery.of(context).size.width;
-        double offsetX = item.level * 16.0;
-        return Container(
-          height: 54,
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(width: 1, color: Colors.grey))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(left: offsetX),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(right: 5),
-                        child: InkWell(
-                          splashColor: Colors.amberAccent.withOpacity(1),
-                          highlightColor: Colors.red,
-                          onTap: () {
-                            selectAllChild(item);
-                          },
-                          child: data.isSelected
-                              ? Icon(
-                                  Icons.star,
-                                  size: 30,
-                                  color: Color(0xFFFF7F50),
-                                )
-                              : Icon(
-                                  Icons.star_border,
-                                  size: 30,
-                                  color: Color(0xFFFFDAB9),
-                                ),
-                        ),
-                      ),
-                      Text(
-                        'level-${item.level}-${item.indexInParent}',
-                        style: TextStyle(
-                            fontSize: 15, color: getColor(item.level)),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-//                          Text(
-//                            '${item.label}',
-//                            style: TextStyle(color: item.color),
-//                          ),
-                    ],
+      backgroundColor: kExampleSurface,
+      appBar: AppBar(title: const Text('list_treeview')),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: kExampleInk,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: exampleOpacity(Colors.white, 0.12),
+                    borderRadius: BorderRadius.circular(8),
                   ),
+                  child: const Icon(Icons.account_tree, color: Colors.white),
+                ),
+                const SizedBox(height: 18),
+                Text(
+                  'Flutter tree view examples',
+                  style: textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Explore expansion, selection, mutation, and lazy loading with reusable row UI.',
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: exampleOpacity(Colors.white, 0.72),
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          for (var i = 0; i < examplesRegistry.length; i++)
+            Padding(
+              padding: EdgeInsets.only(top: i == 0 ? 0 : 10),
+              child: _ExampleCard(entry: examplesRegistry[i], index: i),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ExampleCard extends StatelessWidget {
+  const _ExampleCard({required this.entry, required this.index});
+
+  final ExampleEntry entry;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = <Color>[
+      kExamplePrimary,
+      kExampleTeal,
+      kExampleAmber,
+      kExampleRose,
+    ];
+    final icons = <IconData>[
+      Icons.unfold_more,
+      Icons.add_circle_outline,
+      Icons.check_circle_outline,
+      Icons.cloud_sync_outlined,
+    ];
+    final accent = colors[index % colors.length];
+    final textTheme = Theme.of(context).textTheme;
+
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(8),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: entry.builder),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: kExampleLine),
+          ),
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: exampleOpacity(accent, 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icons[index % icons.length], color: accent),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      entry.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.titleMedium?.copyWith(
+                        color: kExampleInk,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      entry.subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: kExampleMuted,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Visibility(
-                visible: item.isExpand,
-                child: InkWell(
-                  onTap: () {
-                    add(item);
-                  },
-                  child: Icon(
-                    Icons.add,
-                    size: 30,
-                  ),
-                ),
-              )
+              const SizedBox(width: 8),
+              const Icon(Icons.chevron_right, color: kExampleMuted),
             ],
           ),
-        );
-      },
-      onTap: (NodeData data) {
-        print('index = ${data.index}');
-      },
-      onLongPress: (data) {
-        delete(data);
-      },
-      controller: _controller,
+        ),
+      ),
     );
   }
 }

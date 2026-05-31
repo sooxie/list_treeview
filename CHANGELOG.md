@@ -1,4 +1,10 @@
-# 0.3.1
+# 0.4.1
+
+- Fix `RangeError` when expanding a node after appending a child to it while it
+  was collapsed (`insertChildControllers` indexed the controller list with the
+  insertion position instead of the controller's own position)
+
+# 0.4.0
 
 - Flutter 3.0+ / Dart 3 support
 - Remove unused `dart:io` import so the package works on Flutter Web
