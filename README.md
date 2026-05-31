@@ -183,6 +183,7 @@ _controller.insertAtRear(null, newNode);    // append a root node
 _controller.insertAtIndex(1, null, newNode); // insert at root index 1
 ```
 
+
 By default a node is inserted only when its parent is expanded. Pass
 `closeCanInsert: true` to insert even when the parent is collapsed:
 

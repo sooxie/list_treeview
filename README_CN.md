@@ -178,6 +178,7 @@ _controller.insertAtRear(null, newNode);     // 在根级尾部追加
 _controller.insertAtIndex(1, null, newNode); // 在根级索引 1 处插入
 ```
 
+
 默认只有当父节点处于展开状态时才会插入。传入 `closeCanInsert: true` 可在父节点折叠
 时也插入：
 
