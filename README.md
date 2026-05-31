@@ -22,8 +22,25 @@ structure of your data and leaves the UI entirely to you.
 
 ## Preview
 
-![tree animation](./images/tree.gif)
-![screenshot](./images/screen3.jpg)
+<p>
+  <img src="./images/example.gif" alt="ListTreeView demo animation" width="240">
+  <img src="./images/example.png" alt="ListTreeView example overview" width="240">
+</p>
+
+<table>
+  <tr>
+    <td align="center"><strong>Basic & Expand All</strong></td>
+    <td align="center"><strong>Insert & Remove</strong></td>
+    <td align="center"><strong>Selection</strong></td>
+    <td align="center"><strong>Async Lazy Load</strong></td>
+  </tr>
+  <tr>
+    <td><img src="./images/basic.png" alt="Basic and expand-all example" width="180"></td>
+    <td><img src="./images/insert_remove.png" alt="Insert and remove example" width="180"></td>
+    <td><img src="./images/selection.png" alt="Selection example" width="180"></td>
+    <td><img src="./images/lazy_load.png" alt="Async lazy-load example" width="180"></td>
+  </tr>
+</table>
 
 ## Installation
 

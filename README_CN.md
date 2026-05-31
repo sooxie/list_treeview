@@ -20,8 +20,25 @@
 
 ## 预览
 
-![tree animation](./images/tree.gif)
-![screenshot](./images/screen3.jpg)
+<p>
+  <img src="./images/example.gif" alt="ListTreeView 示例动图" width="240">
+  <img src="./images/example.png" alt="ListTreeView 示例总览" width="240">
+</p>
+
+<table>
+  <tr>
+    <td align="center"><strong>基础与全部展开</strong></td>
+    <td align="center"><strong>插入与删除</strong></td>
+    <td align="center"><strong>选择</strong></td>
+    <td align="center"><strong>异步懒加载</strong></td>
+  </tr>
+  <tr>
+    <td><img src="./images/basic.png" alt="基础与全部展开示例" width="180"></td>
+    <td><img src="./images/insert_remove.png" alt="插入与删除示例" width="180"></td>
+    <td><img src="./images/selection.png" alt="选择示例" width="180"></td>
+    <td><img src="./images/lazy_load.png" alt="异步懒加载示例" width="180"></td>
+  </tr>
+</table>
 
 ## 安装
 

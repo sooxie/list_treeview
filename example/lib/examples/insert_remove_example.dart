@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:list_treeview/list_treeview.dart';
 
 import 'shared/expand_collapse_actions.dart';
+import 'shared/example_theme.dart';
 import 'shared/sample_data.dart';
 import 'shared/tree_node_data.dart';
 import 'shared/tree_node_tile.dart';
@@ -54,12 +55,12 @@ class _InsertRemoveExampleState extends State<InsertRemoveExample> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Insert & Remove'),
-        actions: expandCollapseActions(_controller),
-      ),
-      body: ListTreeView(
+    return ExampleScaffold(
+      title: 'Insert & Remove',
+      subtitle:
+          'Append child nodes from any row or remove a node with its entire subtree.',
+      actions: expandCollapseActions(_controller),
+      child: ListTreeView(
         controller: _controller,
         itemBuilder: (BuildContext context, NodeData data) {
           final node = data as TreeNodeData;
@@ -71,11 +72,13 @@ class _InsertRemoveExampleState extends State<InsertRemoveExample> {
                 IconButton(
                   icon: const Icon(Icons.add, size: 20),
                   tooltip: 'Add child',
+                  color: kExampleTeal,
                   onPressed: () => _addChild(node),
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete_outline, size: 20),
                   tooltip: 'Remove node',
+                  color: kExampleRose,
                   onPressed: () => _remove(node),
                 ),
               ],

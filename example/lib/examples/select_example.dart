@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:list_treeview/list_treeview.dart';
 
 import 'shared/expand_collapse_actions.dart';
+import 'shared/example_theme.dart';
 import 'shared/sample_data.dart';
 import 'shared/tree_node_data.dart';
 import 'shared/tree_node_tile.dart';
@@ -35,12 +36,12 @@ class _SelectExampleState extends State<SelectExample> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Selection'),
-        actions: expandCollapseActions(_controller),
-      ),
-      body: ListTreeView(
+    return ExampleScaffold(
+      title: 'Selection',
+      subtitle:
+          'Toggle a branch checkbox to select a node and all of its descendants.',
+      actions: expandCollapseActions(_controller),
+      child: ListTreeView(
         controller: _controller,
         itemBuilder: (BuildContext context, NodeData data) {
           final node = data as TreeNodeData;
@@ -52,7 +53,7 @@ class _SelectExampleState extends State<SelectExample> {
                     ? Icons.check_box
                     : Icons.check_box_outline_blank,
                 size: 22,
-                color: node.isSelected ? Colors.blue : Colors.grey,
+                color: node.isSelected ? kExamplePrimary : kExampleMuted,
               ),
               tooltip: 'Select node and children',
               onPressed: () => _controller.selectAllChild(node),

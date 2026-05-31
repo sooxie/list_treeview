@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:list_treeview/list_treeview.dart';
 
 import 'shared/expand_collapse_actions.dart';
+import 'shared/example_theme.dart';
 import 'shared/sample_data.dart';
 import 'shared/tree_node_data.dart';
 import 'shared/tree_node_tile.dart';
@@ -71,15 +72,15 @@ class _AsyncExampleState extends State<AsyncExample> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Async Lazy Load'),
+    return ExampleScaffold(
+      title: 'Async Lazy Load',
+      subtitle:
+          'Lazy branches fetch children on first tap, then behave like normal expanded tree nodes.',
 
-        /// expandAll only expands lazy nodes that have already been loaded;
-        /// un-loaded lazy nodes are skipped.
-        actions: expandCollapseActions(_controller),
-      ),
-      body: ListTreeView(
+      /// expandAll only expands lazy nodes that have already been loaded;
+      /// un-loaded lazy nodes are skipped.
+      actions: expandCollapseActions(_controller),
+      child: ListTreeView(
         controller: _controller,
         toggleNodeOnTap: false,
         onTap: (NodeData data) => _onTap(data as TreeNodeData),
@@ -91,7 +92,10 @@ class _AsyncExampleState extends State<AsyncExample> {
                 ? const SizedBox(
                     width: 18,
                     height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: kExamplePrimary,
+                    ),
                   )
                 : null,
           );
