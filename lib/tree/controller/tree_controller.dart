@@ -152,6 +152,57 @@ class TreeViewController extends ChangeNotifier {
     controller.collapseAndCollapseChildren(true);
   }
 
+  /// Expand every node in the tree.
+  ///
+  /// Child controllers are created lazily when a parent expands, so the tree is
+  /// walked top-down: only after a parent is expanded do its children get
+  /// controllers. Nodes are located by identity ([NodeController.controllerOfItem])
+  /// rather than by index, so we never read the per-node index cache while the
+  /// tree is being mutated. The cache is reset once at the end so the next
+  /// rebuild recomputes every index from a clean state.
+  void expandAll() {
+    void expand(List<NodeData> nodes) {
+      for (final NodeData node in nodes) {
+        if (node.children.isEmpty) continue;
+        NodeController? controller = _rootController!.controllerOfItem(node);
+        if (controller == null) continue;
+        if (!controller.treeNode.expanded) {
+          expandItem(controller.treeNode);
+        }
+        expand(node.children);
+      }
+    }
+
+    expand(data!.cast<NodeData>());
+    _resetAllCaches(_rootController!);
+    notifyListeners();
+  }
+
+  /// Collapse every node in the tree.
+  ///
+  /// Collapsing a top-level node recursively collapses its descendants, see
+  /// [NodeController.collapseAndCollapseChildren]. Nodes are located by identity
+  /// and the index cache is reset once at the end (see [expandAll]).
+  void collapseAll() {
+    for (final NodeData node in data!.cast<NodeData>()) {
+      NodeController? controller = _rootController!.controllerOfItem(node);
+      if (controller != null && controller.treeNode.expanded) {
+        collapseItem(controller.treeNode);
+      }
+    }
+    _resetAllCaches(_rootController!);
+    notifyListeners();
+  }
+
+  /// Recursively clears the index / visible-count caches on every controller so
+  /// the next rebuild recomputes them from scratch.
+  void _resetAllCaches(NodeController controller) {
+    controller.resetData();
+    for (final NodeController child in controller.childControllers) {
+      _resetAllCaches(child);
+    }
+  }
+
   ///remove
   void removeItem(dynamic item) {
     dynamic temp = parentOfItem(item);
