@@ -22,6 +22,9 @@ class SelectExample extends StatefulWidget {
 class _SelectExampleState extends State<SelectExample> {
   final TreeViewController _controller = TreeViewController();
 
+  /// Labels of the nodes selected the last time the print button was tapped.
+  List<String> _printedNodes = <String>[];
+
   @override
   void initState() {
     super.initState();
@@ -34,6 +37,37 @@ class _SelectExampleState extends State<SelectExample> {
     super.dispose();
   }
 
+  /// Walks the whole tree and returns every node whose checkbox is selected.
+  List<TreeNodeData> _collectSelectedNodes() {
+    final List<TreeNodeData> selected = <TreeNodeData>[];
+
+    void visit(List<NodeData> nodes) {
+      for (final NodeData node in nodes) {
+        if (node.isSelected) {
+          selected.add(node as TreeNodeData);
+        }
+        visit(node.children);
+      }
+    }
+
+    visit((_controller.data ?? const <NodeData>[]).cast<NodeData>());
+    return selected;
+  }
+
+  /// Collects the selected nodes, prints them to the console and shows their
+  /// labels in the panel at the bottom of the page.
+  void _printSelectedNodes() {
+    final List<TreeNodeData> selected = _collectSelectedNodes();
+    final List<String> labels =
+        selected.map((node) => node.label ?? '(unnamed)').toList();
+
+    debugPrint('Selected nodes (${labels.length}): ${labels.join(', ')}');
+
+    setState(() {
+      _printedNodes = labels;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ExampleScaffold(
@@ -41,25 +75,85 @@ class _SelectExampleState extends State<SelectExample> {
       subtitle:
           'Toggle a branch checkbox to select a node and all of its descendants.',
       actions: expandCollapseActions(_controller),
-      child: ListTreeView(
-        controller: _controller,
-        itemBuilder: (BuildContext context, NodeData data) {
-          final node = data as TreeNodeData;
-          return TreeNodeTile(
-            node: node,
-            trailing: IconButton(
-              icon: Icon(
-                node.isSelected
-                    ? Icons.check_box
-                    : Icons.check_box_outline_blank,
-                size: 22,
-                color: node.isSelected ? kExamplePrimary : kExampleMuted,
-              ),
-              tooltip: 'Select node and children',
-              onPressed: () => _controller.selectAllChild(node),
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListTreeView(
+              controller: _controller,
+              itemBuilder: (BuildContext context, NodeData data) {
+                final node = data as TreeNodeData;
+                return TreeNodeTile(
+                  node: node,
+                  trailing: IconButton(
+                    icon: Icon(
+                      node.isSelected
+                          ? Icons.check_box
+                          : Icons.check_box_outline_blank,
+                      size: 22,
+                      color: node.isSelected ? kExamplePrimary : kExampleMuted,
+                    ),
+                    tooltip: 'Select node and children',
+                    onPressed: () => _controller.selectAllChild(node),
+                  ),
+                );
+              },
             ),
-          );
-        },
+          ),
+          _SelectedNodesPanel(
+            nodes: _printedNodes,
+            onPrint: _printSelectedNodes,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Bottom panel with a button that prints the selected nodes and lists them.
+class _SelectedNodesPanel extends StatelessWidget {
+  const _SelectedNodesPanel({
+    Key? key,
+    required this.nodes,
+    required this.onPrint,
+  }) : super(key: key);
+
+  final List<String> nodes;
+  final VoidCallback onPrint;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: const BoxDecoration(
+        color: kExampleSurface,
+        border: Border(top: BorderSide(color: kExampleLine)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Align(
+            alignment: Alignment.centerLeft,
+            child: ElevatedButton.icon(
+              onPressed: onPrint,
+              icon: const Icon(Icons.print, size: 18),
+              label: const Text('Print selected nodes'),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            nodes.isEmpty
+                ? 'No selected nodes printed yet.'
+                : 'Selected (${nodes.length}): ${nodes.join(', ')}',
+            style: textTheme.bodyMedium?.copyWith(
+              color: nodes.isEmpty ? kExampleMuted : kExampleInk,
+              height: 1.35,
+            ),
+          ),
+        ],
       ),
     );
   }
