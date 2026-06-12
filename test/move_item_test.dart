@@ -62,8 +62,7 @@ void main() {
 
       expect(ok, isTrue);
       expect(work.children, isEmpty);
-      expect(data.map((e) => (e as _Node).label).toList(),
-          ['Documents', 'a']);
+      expect(data.map((e) => e.label).toList(), ['Documents', 'a']);
     });
 
     test('reorder within same parent uses post-removal index', () {
@@ -135,6 +134,57 @@ void main() {
 
       expect(c.moveItem(parent, child), isFalse);
       expect(childLabels(parent), ['child']);
+    });
+
+    test('rejects a target parent that is not in the tree', () {
+      final a = node('a');
+      final root = node('root', [a]);
+      final data = [root];
+      final c = TreeViewController();
+      c.treeData(data);
+      c.numberOfVisibleChild();
+      c.expandAll();
+
+      final orphan = node('orphan'); // never added to the tree
+      final ok = c.moveItem(a, orphan);
+
+      expect(ok, isFalse);
+      // The node must not be removed from the tree.
+      expect(childLabels(root), ['a']);
+      expect(orphan.children, isEmpty);
+    });
+
+    test('rejects an item that is not in the tree', () {
+      final root = node('root', [node('a')]);
+      final data = [root];
+      final c = TreeViewController();
+      c.treeData(data);
+      c.numberOfVisibleChild();
+      c.expandAll();
+
+      final orphan = node('orphan');
+      expect(c.moveItem(orphan, root), isFalse);
+      expect(childLabels(root), ['a']);
+    });
+
+    test('moves an item whose parent has never been expanded', () {
+      final grandchild = node('gc');
+      final child = node('child', [grandchild]);
+      final root = node('root', [child]);
+      final dest = node('dest');
+      final data = [root, dest];
+      final c = TreeViewController();
+      c.treeData(data);
+      // Build root controllers only; root is never expanded, so `grandchild`
+      // has no NodeController.
+      c.numberOfVisibleChild();
+
+      final ok = c.moveItem(grandchild, dest);
+
+      expect(ok, isTrue);
+      expect(child.children, isEmpty);
+      expect(childLabels(dest), ['gc']);
+      expect(visibleLabels(c), containsAllInOrder(['root', 'dest', 'gc']));
     });
   });
 

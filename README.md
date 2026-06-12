@@ -238,7 +238,8 @@ final moved = controller.moveItem(node, newParent, index: 0);
 ```
 
 `moveItem` returns `false` and changes nothing when the move is invalid (moving
-a node onto itself or into one of its own descendants). The moved subtree keeps
+a node onto itself, into one of its own descendants, or when the node / target
+parent is not in the tree). The moved subtree keeps
 its expand/collapse state, and a collapsed target parent is expanded
 automatically.
 

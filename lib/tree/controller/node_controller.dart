@@ -74,7 +74,7 @@ class NodeController {
 
   ///
   void addChildController(List<NodeController>? controllers) {
-    if (controllers == null || controllers.length == 0) {
+    if (controllers == null || controllers.isEmpty) {
       return;
     }
     _mutableChildControllers.addAll(controllers);
@@ -83,7 +83,7 @@ class NodeController {
 
   void insertChildControllers(
       List<NodeController>? controllers, List<int> indexes) {
-    if (controllers == null || controllers.length == 0) {
+    if (controllers == null || controllers.isEmpty) {
       return;
     }
     // [indexes[i]] is the position at which [controllers[i]] should be
@@ -108,7 +108,7 @@ class NodeController {
 
   ///Remove
   void removeChildControllers(List<int> indexes) {
-    if (indexes.length == 0) {
+    if (indexes.isEmpty) {
       return;
     }
     indexes.forEach((index) {
@@ -231,7 +231,10 @@ class NodeController {
   }
 
   int get lastVisibleDescendatIndex {
-    return _index + numberOfVisibleDescendants();
+    // Use the [index] getter, not the raw [_index] cache: when this sibling's
+    // index has not been computed yet, [_index] is still [min] and the next
+    // sibling's index would be derived from garbage.
+    return index + numberOfVisibleDescendants();
   }
 
   int lastVisibleDescendantIndexForItem(dynamic item) {

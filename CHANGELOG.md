@@ -1,10 +1,10 @@
-## 0.5.0
+# 0.5.0
 
 - Added `TreeViewController.moveItem(item, newParent, {index})` to move a node
   between parents, reorder siblings, or move to the root level. The moved
   subtree's expand/collapse state is preserved, and a collapsed target parent is
-  expanded automatically. Invalid moves (onto self or a descendant) are rejected
-  and return `false`.
+  expanded automatically. Invalid moves (onto self, into a descendant, or when
+  the item / target parent is not in the tree) are rejected and return `false`.
 - Added a "Drag & Drop" example demonstrating `moveItem` with Flutter's
   `LongPressDraggable` / `DragTarget`.
 

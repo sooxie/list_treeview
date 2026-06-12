@@ -230,7 +230,8 @@ _controller.selectAllChild(item);
 final moved = controller.moveItem(node, newParent, index: 0);
 ```
 
-非法移动（移到自身或自己的子孙下）时 `moveItem` 返回 `false` 且不做任何改动。
+非法移动（移到自身、自己的子孙下，或节点 / 目标父节点不在树中）时
+`moveItem` 返回 `false` 且不做任何改动。
 被移动的子树会保留展开/折叠状态，目标父节点若处于折叠状态会自动展开。
 
 ## API 参考

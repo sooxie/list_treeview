@@ -259,7 +259,7 @@ class TreeViewController extends ChangeNotifier {
     assert(item != null, 'Item should not be null');
     NodeData sItem = item;
     sItem.isSelected = !sItem.isSelected;
-    if (sItem.children.length > 0) {
+    if (sItem.children.isNotEmpty) {
       _selectAllChild(sItem);
     }
     notifyListeners();
@@ -298,7 +298,7 @@ class TreeViewController extends ChangeNotifier {
   /// Begin expand
   void expandItem(TreeNode treeNode) {
     List items = [treeNode.item];
-    while (items.length > 0) {
+    while (items.isNotEmpty) {
       var currentItem = items.first;
       items.remove(currentItem);
       NodeController controller =
@@ -420,7 +420,7 @@ class TreeViewController extends ChangeNotifier {
   }
 
   void _selectAllChild(NodeData sItem) {
-    if (sItem.children.length == 0) return;
+    if (sItem.children.isEmpty) return;
     for (NodeData child in sItem.children) {
       child.isSelected = sItem.isSelected;
       _selectAllChild(child);
@@ -488,8 +488,8 @@ class TreeViewController extends ChangeNotifier {
   ///   been removed; null appends to the end. The value is clamped to
   ///   `[0, length]`.
   /// - Returns false without changing anything when the move is invalid:
-  ///   [newParent] is [item] itself, or a descendant of [item] (would create
-  ///   a cycle).
+  ///   [newParent] is [item] itself, a descendant of [item] (would create
+  ///   a cycle), or either [item] or [newParent] is not in the tree.
   bool moveItem(NodeData item, NodeData? newParent, {int? index}) {
     if (identical(newParent, item)) {
       return false;
@@ -497,10 +497,16 @@ class TreeViewController extends ChangeNotifier {
     if (newParent != null && _contains(item, newParent)) {
       return false;
     }
+    if (_ancestorChain(item) == null) {
+      return false;
+    }
+    if (newParent != null && _ancestorChain(newParent) == null) {
+      return false;
+    }
 
     final List<NodeData> expandedNodes = _expandedInSubtree(item);
 
-    removeItem(item);
+    _removeFromTree(item);
 
     if (newParent != null) {
       _ensureExpandedToParent(newParent);
@@ -521,6 +527,24 @@ class TreeViewController extends ChangeNotifier {
     }
 
     return true;
+  }
+
+  /// Removes [item] from the data tree. Items whose parent has never been
+  /// expanded have no [NodeController]; [removeItem] would misclassify them as
+  /// root nodes and crash, so they get a data-only removal here.
+  void _removeFromTree(NodeData item) {
+    if (rootController.controllerOfItem(item) != null) {
+      removeItem(item);
+      return;
+    }
+    final List<NodeData> chain = _ancestorChain(item)!;
+    final NodeData? parent = chain.length > 1 ? chain[chain.length - 2] : null;
+    if (parent == null) {
+      data!.remove(item);
+    } else {
+      parent.children.remove(item);
+    }
+    notifyListeners();
   }
 
   /// True when [target] is a descendant of [root] in the data tree.
@@ -583,7 +607,8 @@ class TreeViewController extends ChangeNotifier {
       return;
     }
     for (final NodeData node in chain) {
-      final NodeController? controller = _rootController?.controllerOfItem(node);
+      final NodeController? controller =
+          _rootController?.controllerOfItem(node);
       if (controller == null) {
         continue;
       }
