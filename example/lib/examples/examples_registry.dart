@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'async_example.dart';
 import 'basic_example.dart';
+import 'drag_example.dart';
 import 'insert_remove_example.dart';
 import 'select_example.dart';
 
@@ -39,5 +40,10 @@ final List<ExampleEntry> examplesRegistry = <ExampleEntry>[
     title: 'Async Lazy Load',
     subtitle: 'Load children asynchronously on expand',
     builder: (_) => const AsyncExample(),
+  ),
+  ExampleEntry(
+    title: 'Drag & Drop',
+    subtitle: 'Move nodes between parents with drag and drop',
+    builder: (_) => const DragExample(),
   ),
 ];

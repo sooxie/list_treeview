@@ -481,6 +481,118 @@ class TreeViewController extends ChangeNotifier {
     return controller;
   }
 
+  /// Moves [item] to become a child of [newParent] at [index].
+  ///
+  /// - [newParent] == null moves [item] to the root level.
+  /// - [index] is the position in the target child list *after* [item] has
+  ///   been removed; null appends to the end. The value is clamped to
+  ///   `[0, length]`.
+  /// - Returns false without changing anything when the move is invalid:
+  ///   [newParent] is [item] itself, or a descendant of [item] (would create
+  ///   a cycle).
+  bool moveItem(NodeData item, NodeData? newParent, {int? index}) {
+    if (identical(newParent, item)) {
+      return false;
+    }
+    if (newParent != null && _contains(item, newParent)) {
+      return false;
+    }
+
+    final List<NodeData> expandedNodes = _expandedInSubtree(item);
+
+    removeItem(item);
+
+    if (newParent != null) {
+      _ensureExpandedToParent(newParent);
+    }
+
+    final List finalList = newParent == null ? data! : newParent.children;
+    int target = index ?? finalList.length;
+    if (target < 0) target = 0;
+    if (target > finalList.length) target = finalList.length;
+
+    insertAtIndex(target, newParent, item);
+
+    for (final NodeData n in expandedNodes) {
+      final NodeController? controller = _rootController?.controllerOfItem(n);
+      if (controller != null && !controller.treeNode.expanded) {
+        expandItem(controller.treeNode);
+      }
+    }
+
+    return true;
+  }
+
+  /// True when [target] is a descendant of [root] in the data tree.
+  bool _contains(NodeData root, NodeData target) {
+    for (final NodeData child in root.children) {
+      if (identical(child, target)) {
+        return true;
+      }
+      if (_contains(child, target)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /// Pre-order list of nodes in [root]'s subtree (including [root]) that are
+  /// currently expanded.
+  List<NodeData> _expandedInSubtree(NodeData root) {
+    final List<NodeData> result = [];
+    void walk(NodeData n) {
+      final NodeController? controller = _rootController?.controllerOfItem(n);
+      if (controller != null && controller.treeNode.expanded) {
+        result.add(n);
+      }
+      for (final NodeData child in n.children) {
+        walk(child);
+      }
+    }
+
+    walk(root);
+    return result;
+  }
+
+  /// Returns the data-tree path from a root down to [target] (inclusive),
+  /// or null when [target] is not present.
+  List<NodeData>? _ancestorChain(NodeData target) {
+    final List<NodeData> path = [];
+    bool dfs(List nodes) {
+      for (final NodeData n in nodes.cast<NodeData>()) {
+        path.add(n);
+        if (identical(n, target)) {
+          return true;
+        }
+        if (dfs(n.children)) {
+          return true;
+        }
+        path.removeLast();
+      }
+      return false;
+    }
+
+    return dfs(data!) ? List<NodeData>.of(path) : null;
+  }
+
+  /// Expands [parent] and every collapsed ancestor above it, top-down, so a
+  /// child can be inserted into [parent] and rendered.
+  void _ensureExpandedToParent(NodeData parent) {
+    final List<NodeData>? chain = _ancestorChain(parent);
+    if (chain == null) {
+      return;
+    }
+    for (final NodeData node in chain) {
+      final NodeController? controller = _rootController?.controllerOfItem(node);
+      if (controller == null) {
+        continue;
+      }
+      if (!controller.treeNode.expanded) {
+        expandItem(controller.treeNode);
+      }
+    }
+  }
+
   ///Gets the data information for the parent node
   NodeData? parentOfItem(dynamic item) {
     NodeController? controller = rootController.controllerOfItem(item);

@@ -221,6 +221,18 @@ _controller.selectAllChild(item);
 
 在 `itemBuilder` 中通过 `item.isSelected` 读取结果。
 
+### 移动节点
+
+```dart
+// 把 `node` 移动为 `newParent` 的子节点，放在第 `index` 位
+// （index 指移除 `node` 之后，在目标子列表中的位置；省略则追加到末尾）。
+// parent 传 `null` 表示移动到根层级。
+final moved = controller.moveItem(node, newParent, index: 0);
+```
+
+非法移动（移到自身或自己的子孙下）时 `moveItem` 返回 `false` 且不做任何改动。
+被移动的子树会保留展开/折叠状态，目标父节点若处于折叠状态会自动展开。
+
 ## API 参考
 
 ### `ListTreeView`
