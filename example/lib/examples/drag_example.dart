@@ -75,9 +75,8 @@ class _DragExampleState extends State<DragExample> {
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: highlighted
-                        ? exampleOpacity(kExampleTeal, 0.12)
-                        : null,
+                    color:
+                        highlighted ? exampleOpacity(kExampleTeal, 0.12) : null,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: TreeNodeTile(node: node),
@@ -106,7 +105,8 @@ class _DragFeedback extends StatelessWidget {
           color: kExamplePrimary,
           borderRadius: BorderRadius.circular(8),
           boxShadow: const [
-            BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, 2)),
+            BoxShadow(
+                color: Colors.black26, blurRadius: 8, offset: Offset(0, 2)),
           ],
         ),
         child: Row(

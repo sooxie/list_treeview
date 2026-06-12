@@ -88,7 +88,7 @@ class _ListTreeViewState extends State<ListTreeView> {
   Widget build(BuildContext context) {
     if (widget.controller == null ||
         widget.controller!.data == null ||
-        widget.controller!.data!.length == 0) {
+        widget.controller!.data!.isEmpty) {
       return Center(
         child: Text(''),
       );
@@ -116,7 +116,7 @@ class _ListTreeViewState extends State<ListTreeView> {
                   widget.controller!.isExpanded(treeNode.item);
               treeNode.item!.index = index;
               NodeData? parent = widget.controller!.parentOfItem(treeNode.item);
-              if (parent != null && parent.children.length > 0) {
+              if (parent != null && parent.children.isNotEmpty) {
                 treeNode.item!.indexInParent =
                     parent.children.indexOf(treeNode.item!);
               } else {
